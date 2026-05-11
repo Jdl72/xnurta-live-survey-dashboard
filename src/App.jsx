@@ -191,7 +191,7 @@ function App() {
         <header className="brand-bar">
           <div className="brand-lockup brand-lockup-event">
             <img className="event-logo" src={signalToScaleLogoWhite} alt="Signal to Scale 2026" />
-            <div className="presenter-lockup">
+            <div className="presenter-lockup" aria-label="Presented by Xnurta">
               <span className="presenter-label">Presented by</span>
               <img className="presenter-logo" src={xnurtaLogoWhite} alt="Xnurta" />
             </div>
@@ -222,7 +222,7 @@ function App() {
             <p className="eyebrow">Live Audience Survey</p>
             <h1>Capturing Signal</h1>
             <p className="hero-text">
-              Real-time audience sentiment from Signal to Scale 2026 across AI readiness, retail media friction, and program maturity.
+              Live audience sentiment across AI readiness, retail media friction, and program maturity.
             </p>
           </div>
 
@@ -238,21 +238,7 @@ function App() {
           </div>
         </section>
 
-        <section className="status-bar">
-          <div>
-            <span className="status-label">Summit</span>
-            <strong>Signal to Scale 2026</strong>
-          </div>
-          <div>
-            <span className="status-label">Focus</span>
-            <strong>Retail media + agentic AI</strong>
-          </div>
-          <div>
-            <span className="status-label">Presented by</span>
-            <strong>Xnurta</strong>
-          </div>
-          {status.error ? <div className="status-error">{status.error}</div> : null}
-        </section>
+        {status.error ? <section className="status-bar status-bar-error">{status.error}</section> : null}
 
         {viewMode === 'slides' ? (
           <SlideLoop

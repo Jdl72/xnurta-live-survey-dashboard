@@ -55,10 +55,11 @@ describe('App', () => {
 
     await waitFor(() => expect(fetchSurveyRows).toHaveBeenCalledTimes(1));
     expect(screen.getByRole('heading', { name: 'Capturing Signal' })).toBeInTheDocument();
-    expect(screen.getAllByText('Signal to Scale 2026').length).toBeGreaterThan(0);
+    expect(screen.getByAltText('Signal to Scale 2026')).toBeInTheDocument();
+    expect(screen.getByLabelText('Presented by Xnurta')).toBeInTheDocument();
     expect(
       screen.getByText(
-        'Real-time audience sentiment from Signal to Scale 2026 across AI readiness, retail media friction, and program maturity.',
+        'Live audience sentiment across AI readiness, retail media friction, and program maturity.',
       ),
     ).toBeInTheDocument();
     expect(screen.getAllByRole('heading', { level: 2 }).length).toBeGreaterThanOrEqual(1);
@@ -82,7 +83,7 @@ describe('App', () => {
     render(<App />);
 
     await waitFor(() => expect(fetchSurveyRows).toHaveBeenCalledTimes(1));
-    expect(screen.getAllByText('Signal to Scale 2026').length).toBeGreaterThan(0);
+    expect(screen.getByAltText('Signal to Scale 2026')).toBeInTheDocument();
     expect(getMetricCard('Responses')).toHaveTextContent('2');
 
     await act(async () => {
@@ -102,7 +103,7 @@ describe('App', () => {
 
     await waitFor(() => expect(fetchSurveyRows).toHaveBeenCalledTimes(1));
     await waitFor(() =>
-      expect(document.querySelector('.status-error')).toHaveTextContent(
+      expect(document.querySelector('.status-bar-error')).toHaveTextContent(
         'Google Sheets fetch failed with status 500.',
       ),
     );
@@ -149,7 +150,7 @@ describe('App', () => {
     });
 
     await waitFor(() =>
-      expect(document.querySelector('.status-error')).toHaveTextContent(
+      expect(document.querySelector('.status-bar-error')).toHaveTextContent(
         'Google Sheets fetch failed with status 503.',
       ),
     );
