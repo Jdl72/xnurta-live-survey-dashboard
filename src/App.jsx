@@ -475,16 +475,17 @@ function ChartRenderer({ panel, mode = 'dashboard' }) {
 
 function HorizontalBarChart({ data, color, mode }) {
   const isSlide = mode === 'slide';
+  const axisWidth = getCategoryAxisWidth(data, isSlide ? 360 : 220, isSlide ? 520 : 300, isSlide ? 9.5 : 7.2);
   return (
     <div className={`chart-wrap ${isSlide ? 'chart-wrap-slide' : ''}`}>
       <ResponsiveContainer width="100%" height={isSlide ? 520 : 240}>
-        <RechartsBarChart data={data} layout="vertical" margin={{ top: 8, right: 64, left: 12, bottom: 0 }}>
+        <RechartsBarChart data={data} layout="vertical" margin={{ top: 8, right: 64, left: isSlide ? 24 : 12, bottom: 0 }}>
           <CartesianGrid horizontal={false} stroke="rgba(73, 73, 69, 0.12)" />
           <XAxis type="number" allowDecimals={false} tick={isSlide ? slideTickStyle : tickStyle} axisLine={false} tickLine={false} />
           <YAxis
             type="category"
             dataKey="label"
-            width={isSlide ? 320 : 210}
+            width={axisWidth}
             tick={isSlide ? slideTickStyle : tickStyle}
             axisLine={false}
             tickLine={false}
@@ -521,16 +522,17 @@ function VerticalBarChart({ data, color, mode }) {
 
 function DistributionBarChart({ data, mode }) {
   const isSlide = mode === 'slide';
+  const axisWidth = getCategoryAxisWidth(data, isSlide ? 380 : 230, isSlide ? 560 : 320, isSlide ? 9.8 : 7.4);
   return (
     <div className={`chart-wrap ${isSlide ? 'chart-wrap-slide' : ''}`}>
       <ResponsiveContainer width="100%" height={isSlide ? 520 : 240}>
-        <RechartsBarChart data={data} layout="vertical" margin={{ top: 8, right: 64, left: 10, bottom: 0 }}>
+        <RechartsBarChart data={data} layout="vertical" margin={{ top: 8, right: 64, left: isSlide ? 24 : 10, bottom: 0 }}>
           <CartesianGrid horizontal={false} stroke="rgba(73, 73, 69, 0.12)" />
           <XAxis type="number" allowDecimals={false} tick={isSlide ? slideTickStyle : tickStyle} axisLine={false} tickLine={false} />
           <YAxis
             type="category"
             dataKey="label"
-            width={isSlide ? 340 : 220}
+            width={axisWidth}
             tick={isSlide ? slideTickStyle : tickStyle}
             axisLine={false}
             tickLine={false}
@@ -650,6 +652,16 @@ const accentFill = {
 };
 
 const accentRing = ['#6aa7eb', '#1f2c59', '#86b6ef', '#27345f', '#b7cde9'];
+
+function getCategoryAxisWidth(data, minWidth, maxWidth, charWidth) {
+  const longestLabel = data.reduce((max, item) => {
+    const lines = String(item.label ?? '').split('\n');
+    const longestLine = lines.reduce((lineMax, line) => Math.max(lineMax, line.length), 0);
+    return Math.max(max, longestLine);
+  }, 0);
+
+  return Math.min(maxWidth, Math.max(minWidth, Math.ceil(longestLabel * charWidth)));
+}
 
 class DashboardErrorBoundary extends Component {
   constructor(props) {
