@@ -643,13 +643,13 @@ const tooltipStyle = {
 };
 
 const accentFill = {
-  cyan: '#4eb4fe',
-  coral: '#f69321',
-  gold: '#7cc8ff',
-  mint: '#2869df',
+  cyan: '#6aa7eb',
+  coral: '#1f2c59',
+  gold: '#86b6ef',
+  mint: '#27345f',
 };
 
-const accentRing = ['#4eb4fe', '#2869df', '#f69321', '#ffd08a', '#8bb1ff'];
+const accentRing = ['#6aa7eb', '#1f2c59', '#86b6ef', '#27345f', '#b7cde9'];
 
 class DashboardErrorBoundary extends Component {
   constructor(props) {
