@@ -4,6 +4,7 @@ import {
   BarChart as RechartsBarChart,
   CartesianGrid,
   Cell,
+  LabelList,
   Pie,
   PieChart,
   ResponsiveContainer,
@@ -263,20 +264,23 @@ function ChartRenderer({ panel }) {
 function HorizontalBarChart({ data, color }) {
   return (
     <div className="chart-wrap">
-      <ResponsiveContainer width="100%" height={220}>
-        <RechartsBarChart data={data} layout="vertical" margin={{ top: 8, right: 16, left: 18, bottom: 0 }}>
-          <CartesianGrid horizontal={false} stroke="rgba(148, 163, 184, 0.12)" />
+      <ResponsiveContainer width="100%" height={240}>
+        <RechartsBarChart data={data} layout="vertical" margin={{ top: 8, right: 42, left: 12, bottom: 0 }}>
+          <CartesianGrid horizontal={false} stroke="rgba(73, 73, 69, 0.12)" />
           <XAxis type="number" allowDecimals={false} tick={tickStyle} axisLine={false} tickLine={false} />
           <YAxis
             type="category"
             dataKey="label"
-            width={130}
+            width={210}
             tick={tickStyle}
             axisLine={false}
             tickLine={false}
+            tickMargin={14}
           />
           <Tooltip contentStyle={tooltipStyle} cursor={{ fill: 'rgba(148, 163, 184, 0.08)' }} />
-          <Bar dataKey="value" radius={[0, 10, 10, 0]} fill={color} />
+          <Bar dataKey="value" radius={[0, 10, 10, 0]} fill={color} barSize={28}>
+            <LabelList dataKey="value" position="right" fill="#050713" fontSize={14} fontWeight={600} />
+          </Bar>
         </RechartsBarChart>
       </ResponsiveContainer>
     </div>
@@ -286,13 +290,15 @@ function HorizontalBarChart({ data, color }) {
 function VerticalBarChart({ data, color }) {
   return (
     <div className="chart-wrap">
-      <ResponsiveContainer width="100%" height={220}>
-        <RechartsBarChart data={data} margin={{ top: 8, right: 8, left: -20, bottom: 0 }}>
-          <CartesianGrid vertical={false} stroke="rgba(148, 163, 184, 0.12)" />
-          <XAxis dataKey="label" tick={tickStyle} axisLine={false} tickLine={false} />
-          <YAxis allowDecimals={false} tick={tickStyle} axisLine={false} tickLine={false} />
+      <ResponsiveContainer width="100%" height={250}>
+        <RechartsBarChart data={data} margin={{ top: 18, right: 10, left: 0, bottom: 10 }}>
+          <CartesianGrid vertical={false} stroke="rgba(73, 73, 69, 0.12)" />
+          <XAxis dataKey="label" tick={compactTickStyle} axisLine={false} tickLine={false} interval={0} tickMargin={12} />
+          <YAxis allowDecimals={false} tick={tickStyle} axisLine={false} tickLine={false} width={28} />
           <Tooltip contentStyle={tooltipStyle} cursor={{ fill: 'rgba(148, 163, 184, 0.08)' }} />
-          <Bar dataKey="value" radius={[10, 10, 0, 0]} fill={color} />
+          <Bar dataKey="value" radius={[10, 10, 0, 0]} fill={color} maxBarSize={96}>
+            <LabelList dataKey="value" position="top" fill="#050713" fontSize={14} fontWeight={600} />
+          </Bar>
         </RechartsBarChart>
       </ResponsiveContainer>
     </div>
@@ -302,23 +308,25 @@ function VerticalBarChart({ data, color }) {
 function DistributionBarChart({ data }) {
   return (
     <div className="chart-wrap">
-      <ResponsiveContainer width="100%" height={220}>
-        <RechartsBarChart data={data} layout="vertical" margin={{ top: 8, right: 12, left: 16, bottom: 0 }}>
-          <CartesianGrid horizontal={false} stroke="rgba(148, 163, 184, 0.12)" />
+      <ResponsiveContainer width="100%" height={240}>
+        <RechartsBarChart data={data} layout="vertical" margin={{ top: 8, right: 42, left: 10, bottom: 0 }}>
+          <CartesianGrid horizontal={false} stroke="rgba(73, 73, 69, 0.12)" />
           <XAxis type="number" allowDecimals={false} tick={tickStyle} axisLine={false} tickLine={false} />
           <YAxis
             type="category"
             dataKey="label"
-            width={148}
+            width={220}
             tick={tickStyle}
             axisLine={false}
             tickLine={false}
+            tickMargin={14}
           />
           <Tooltip contentStyle={tooltipStyle} cursor={{ fill: 'rgba(148, 163, 184, 0.08)' }} />
-          <Bar dataKey="value" radius={[0, 10, 10, 0]}>
+          <Bar dataKey="value" radius={[0, 10, 10, 0]} barSize={28}>
             {data.map((item) => (
               <Cell key={item.label} fill={item.color} />
             ))}
+            <LabelList dataKey="value" position="right" fill="#050713" fontSize={14} fontWeight={600} />
           </Bar>
         </RechartsBarChart>
       </ResponsiveContainer>
@@ -405,13 +413,14 @@ function SplitDonutChart({ data }) {
   );
 }
 
-const tickStyle = { fill: '#d7e6ff', fontSize: 11 };
+const tickStyle = { fill: '#494945', fontSize: 14, fontWeight: 500 };
+const compactTickStyle = { fill: '#494945', fontSize: 12, fontWeight: 500 };
 
 const tooltipStyle = {
-  background: 'rgba(7, 17, 31, 0.96)',
-  border: '1px solid rgba(147, 197, 253, 0.18)',
-  borderRadius: '14px',
-  color: '#eff6ff',
+  background: '#ffffff',
+  border: '1px solid rgba(5, 7, 19, 0.08)',
+  borderRadius: '12px',
+  color: '#050713',
 };
 
 const accentFill = {

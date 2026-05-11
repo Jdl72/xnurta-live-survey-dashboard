@@ -46,7 +46,9 @@ textarea {
 .page-shell {
   position: relative;
   min-height: 100vh;
-  padding: 28px;
+  max-width: 1680px;
+  margin: 0 auto;
+  padding: 24px 28px 32px;
   overflow: hidden;
 }
 
@@ -85,7 +87,7 @@ textarea {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  margin-bottom: 28px;
+  margin-bottom: 20px;
 }
 
 .brand-lockup {
@@ -95,53 +97,53 @@ textarea {
 }
 
 .brand-icon-image {
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   object-fit: contain;
 }
 
 .brand-logo {
   display: block;
-  width: min(220px, 42vw);
+  width: min(188px, 34vw);
   height: auto;
 }
 
 .brand-tag {
-  margin: 6px 0 0;
+  margin: 4px 0 0;
   color: rgba(255, 255, 255, 0.72);
-  font-size: 14px;
-  line-height: 20px;
+  font-size: 12px;
+  line-height: 18px;
 }
 
 .brand-chip {
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
-  padding: 8px 14px;
+  min-height: 32px;
+  padding: 6px 12px;
   border-radius: 999px;
   border: 1px solid rgba(78, 180, 254, 0.24);
   background: rgba(78, 180, 254, 0.12);
   color: #d7ecff;
-  font-size: 14px;
-  line-height: 20px;
+  font-size: 12px;
+  line-height: 18px;
 }
 
 .hero {
   display: grid;
-  grid-template-columns: minmax(0, 1.7fr) minmax(260px, 0.8fr);
-  gap: 24px;
+  grid-template-columns: minmax(0, 1.2fr) minmax(340px, 0.7fr);
+  gap: 18px;
   align-items: end;
-  margin-bottom: 18px;
+  margin-bottom: 14px;
 }
 
 .eyebrow {
-  margin: 0 0 8px;
+  margin: 0 0 6px;
   color: var(--electric-blue);
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 600;
-  line-height: 18px;
+  line-height: 14px;
 }
 
 .hero h1,
@@ -153,30 +155,31 @@ textarea {
 }
 
 .hero h1 {
-  max-width: 10ch;
+  max-width: 8ch;
   margin: 0;
-  font-size: clamp(2.8rem, 5vw, 4.5rem);
+  font-size: clamp(3.3rem, 5.8vw, 5.4rem);
   font-weight: 600;
-  line-height: 1;
+  line-height: 0.92;
 }
 
 .hero-text {
-  max-width: 42rem;
-  margin: 16px 0 0;
+  max-width: 38rem;
+  margin: 10px 0 0;
   color: rgba(255, 255, 255, 0.82);
-  font-size: 16px;
-  line-height: 24px;
+  font-size: 15px;
+  line-height: 22px;
 }
 
 .hero-meta {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
+  align-self: center;
 }
 
 .metric-card {
-  min-height: 112px;
-  padding: 18px 20px;
+  min-height: 92px;
+  padding: 14px 18px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   background: linear-gradient(180deg, rgba(32, 34, 40, 0.96), rgba(17, 19, 27, 0.96));
@@ -193,9 +196,9 @@ textarea {
 
 .metric-card strong {
   display: block;
-  margin-top: 10px;
+  margin-top: 8px;
   color: var(--text);
-  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  font-size: clamp(1.9rem, 3.1vw, 2.8rem);
   line-height: 1;
   font-weight: 600;
 }
@@ -204,7 +207,7 @@ textarea {
   display: flex;
   align-items: stretch;
   gap: 12px;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 .status-bar > div {
@@ -219,7 +222,7 @@ textarea {
 }
 
 .status-bar > div:not(.status-error) {
-  min-width: 180px;
+  min-width: 210px;
 }
 
 .status-label {
@@ -232,8 +235,8 @@ textarea {
 
 .status-bar strong {
   color: var(--text);
-  font-size: 16px;
-  line-height: 24px;
+  font-size: 15px;
+  line-height: 22px;
   font-weight: 500;
 }
 
@@ -245,25 +248,25 @@ textarea {
 }
 
 .section-block {
-  margin-bottom: 28px;
+  margin-bottom: 22px;
 }
 
 .section-heading {
   display: grid;
-  gap: 6px;
-  margin-bottom: 14px;
+  gap: 4px;
+  margin-bottom: 10px;
 }
 
 .section-heading h2 {
   margin: 0;
-  font-size: clamp(1.8rem, 2.5vw, 2.5rem);
+  font-size: clamp(2rem, 2.7vw, 2.8rem);
   font-weight: 600;
   line-height: 1.1;
 }
 
 .section-grid {
   display: grid;
-  gap: 16px;
+  gap: 14px;
 }
 
 .section-grid-readiness {
@@ -280,12 +283,12 @@ textarea {
 
 .stack-column {
   display: grid;
-  gap: 16px;
+  gap: 14px;
 }
 
 .panel {
-  min-height: 300px;
-  padding: 24px;
+  min-height: 280px;
+  padding: 18px 18px 16px;
   border: 1px solid var(--surface-border);
   border-radius: 12px;
   background: linear-gradient(180deg, #f5f5f5 0%, var(--surface) 100%);
@@ -294,31 +297,31 @@ textarea {
 }
 
 .panel-header {
-  margin-bottom: 18px;
+  margin-bottom: 12px;
 }
 
 .panel-header h2 {
   margin: 0;
   color: var(--text-strong);
-  font-size: clamp(1.25rem, 2vw, 1.6rem);
+  font-size: clamp(1.3rem, 2vw, 1.7rem);
   font-weight: 600;
-  line-height: 1.2;
+  line-height: 1.15;
 }
 
 .panel-featured {
-  min-height: 420px;
+  min-height: 360px;
 }
 
 .panel-featured .panel-header h2 {
-  font-size: clamp(1.65rem, 2.6vw, 2.3rem);
+  font-size: clamp(1.75rem, 2.8vw, 2.4rem);
 }
 
 .panel-wide {
-  min-height: 340px;
+  min-height: 250px;
 }
 
 .panel-compact {
-  min-height: 260px;
+  min-height: 170px;
 }
 
 .panel-cyan {
@@ -343,14 +346,14 @@ textarea {
 
 .chart-wrap-split {
   display: grid;
-  grid-template-columns: 1.1fr 1fr;
+  grid-template-columns: minmax(180px, 0.8fr) 1.2fr;
   align-items: center;
   gap: 12px;
 }
 
 .confidence-scale {
   display: grid;
-  gap: 22px;
+  gap: 16px;
 }
 
 .confidence-summary {
@@ -365,14 +368,14 @@ textarea {
 
 .confidence-score strong {
   color: var(--text-strong);
-  font-size: clamp(1.9rem, 3vw, 2.8rem);
+  font-size: clamp(2rem, 3.2vw, 3rem);
   font-weight: 600;
   line-height: 1;
 }
 
 .confidence-score span {
   color: var(--text-secondary);
-  font-size: 14px;
+  font-size: 13px;
   line-height: 20px;
 }
 
@@ -395,7 +398,7 @@ textarea {
 
 .confidence-bars {
   display: grid;
-  gap: 12px;
+  gap: 10px;
 }
 
 .confidence-row {
@@ -412,13 +415,13 @@ textarea {
 
 .confidence-row-copy span {
   color: var(--text-secondary);
-  font-size: 14px;
+  font-size: 13px;
   line-height: 20px;
 }
 
 .confidence-row-copy strong {
   color: var(--text-strong);
-  font-size: 15px;
+  font-size: 14px;
   line-height: 20px;
 }
 
@@ -428,7 +431,7 @@ textarea {
 
 .split-legend {
   display: grid;
-  gap: 10px;
+  gap: 8px;
 }
 
 .split-legend-row {
@@ -436,8 +439,8 @@ textarea {
   align-items: center;
   gap: 10px;
   color: var(--text-secondary);
-  font-size: 14px;
-  line-height: 20px;
+  font-size: 12px;
+  line-height: 18px;
 }
 
 .split-legend-row strong {
@@ -446,8 +449,8 @@ textarea {
 }
 
 .legend-dot {
-  width: 10px;
-  height: 10px;
+  width: 9px;
+  height: 9px;
   border-radius: 999px;
   flex: 0 0 auto;
 }
@@ -472,6 +475,10 @@ textarea {
 
 .recharts-cartesian-grid line {
   stroke: rgba(73, 73, 69, 0.16);
+}
+
+.recharts-layer.recharts-cartesian-axis text {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 .recharts-tooltip-wrapper .recharts-default-tooltip {

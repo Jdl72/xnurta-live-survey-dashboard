@@ -15,6 +15,7 @@ vi.mock('recharts', () => {
     Tooltip: () => null,
     Bar: () => <div data-testid="bar-chart-mark" />,
     Pie: () => <div data-testid="pie-chart-mark" />,
+    LabelList: () => null,
     Cell: () => null,
   };
 });
