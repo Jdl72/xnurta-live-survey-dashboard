@@ -1,4 +1,5 @@
 import React, { Component, useEffect, useMemo, useState } from 'react';
+import { QRCodeSVG } from 'qrcode.react';
 import {
   Bar,
   BarChart as RechartsBarChart,
@@ -22,13 +23,18 @@ import xnurtaLogoWhite from './assets/xnurta-logo-white.png';
 import xnurtaIconColor from './assets/xnurta-icon-color.png';
 
 const SECTION_ROTATE_MS = 12000;
-const SLIDE_ROTATE_MS = 8000;
+const SLIDE_ROTATE_MS = 14000;
+const SLIDE_FADE_MS = 700;
+const SURVEY_URL =
+  'https://docs.google.com/forms/d/e/1FAIpQLSenGJQWq_oqu62l_U345OaX-OduZHQyGE4xj0QYvwt2cyWHEw/viewform?usp=header';
 
 function App() {
   const [rows, setRows] = useState(mockRows);
   const [viewMode, setViewMode] = useState('slides');
   const [activeSectionIndex, setActiveSectionIndex] = useState(0);
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
+  const [visibleSlideIndex, setVisibleSlideIndex] = useState(0);
+  const [fadingSlideIndex, setFadingSlideIndex] = useState(null);
   const [status, setStatus] = useState({
     sourceLabel: 'Demo mode',
     lastUpdated: new Date(),
@@ -141,6 +147,8 @@ function App() {
 
   useEffect(() => {
     if (viewMode !== 'slides') {
+      setVisibleSlideIndex(activeSlideIndex);
+      setFadingSlideIndex(null);
       return undefined;
     }
 
@@ -152,6 +160,27 @@ function App() {
       window.clearInterval(timer);
     };
   }, [slides.length, viewMode]);
+
+  useEffect(() => {
+    if (viewMode !== 'slides') {
+      return undefined;
+    }
+
+    if (activeSlideIndex === visibleSlideIndex) {
+      return undefined;
+    }
+
+    setFadingSlideIndex(visibleSlideIndex);
+    setVisibleSlideIndex(activeSlideIndex);
+
+    const timer = window.setTimeout(() => {
+      setFadingSlideIndex(null);
+    }, SLIDE_FADE_MS);
+
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, [activeSlideIndex, visibleSlideIndex, viewMode]);
 
   return (
     <DashboardErrorBoundary>
@@ -207,20 +236,25 @@ function App() {
 
         <section className="status-bar">
           <div>
-            <span className="status-label">Source</span>
-            <strong>{status.sourceLabel}</strong>
+            <span className="status-label">Event</span>
+            <strong>Live audience survey</strong>
           </div>
           <div>
-            <span className="status-label">View</span>
-            <strong>{viewMode === 'slides' ? 'Slide loop' : activeSection.eyebrow}</strong>
+            <span className="status-label">Theme</span>
+            <strong>Retail Media + Agentic AI</strong>
+          </div>
+          <div>
+            <span className="status-label">Prompt</span>
+            <strong>Scan to answer live</strong>
           </div>
           {status.error ? <div className="status-error">{status.error}</div> : null}
         </section>
 
         {viewMode === 'slides' ? (
           <SlideLoop
-            slide={activeSlide}
-            slideIndex={activeSlideIndex}
+            slide={slides[visibleSlideIndex]}
+            fadingSlide={fadingSlideIndex === null ? null : slides[fadingSlideIndex]}
+            slideIndex={visibleSlideIndex}
             slideCount={slides.length}
             onSelectSlide={setActiveSlideIndex}
             slides={slides}
@@ -249,6 +283,8 @@ function App() {
             </SectionBlock>
           </>
         )}
+
+        <SurveyCta />
       </main>
     </DashboardErrorBoundary>
   );
@@ -275,26 +311,20 @@ function SectionBlock({ eyebrow, title, layoutClass, children }) {
   );
 }
 
-function SlideLoop({ slide, slideIndex, slideCount, slides, onSelectSlide }) {
+function SlideLoop({ slide, fadingSlide, slideIndex, slideCount, slides, onSelectSlide }) {
   return (
     <section className="slide-loop">
-      <div className="slide-meta">
-        <div>
-          <p className="eyebrow">{slide.sectionEyebrow}</p>
-          <h2>{slide.title}</h2>
-        </div>
-        <div className="slide-counter">
-          <span>
-            {slideIndex + 1} / {slideCount}
-          </span>
-        </div>
+      <div className="slide-stage">
+        {fadingSlide ? (
+          <SlideFrame
+            slide={fadingSlide}
+            slideIndex={fadingSlide === slide ? slideIndex : null}
+            slideCount={slideCount}
+            mode="exiting"
+          />
+        ) : null}
+        <SlideFrame slide={slide} slideIndex={slideIndex} slideCount={slideCount} mode="active" />
       </div>
-
-      <Panel title={slide.question} accent={slide.accent} variant="slide-hero">
-        <DashboardErrorBoundary compact>
-          <ChartRenderer panel={slide} mode="slide" />
-        </DashboardErrorBoundary>
-      </Panel>
 
       <div className="slide-dots" aria-label="Slides">
         {slides.map((entry, index) => (
@@ -308,6 +338,47 @@ function SlideLoop({ slide, slideIndex, slideCount, slides, onSelectSlide }) {
         ))}
       </div>
     </section>
+  );
+}
+
+function SlideFrame({ slide, slideIndex, slideCount, mode }) {
+  return (
+    <div className={`slide-frame slide-frame-${mode}`}>
+      <div className="slide-meta">
+        <div>
+          <p className="eyebrow">{slide.sectionEyebrow}</p>
+          <h2>{slide.title}</h2>
+        </div>
+        <div className="slide-counter">
+          <span>
+            {(slideIndex ?? 0) + 1} / {slideCount}
+          </span>
+        </div>
+      </div>
+
+      <Panel title={slide.question} accent={slide.accent} variant="slide-hero">
+        <DashboardErrorBoundary compact>
+          <ChartRenderer panel={slide} mode="slide" />
+        </DashboardErrorBoundary>
+      </Panel>
+    </div>
+  );
+}
+
+function SurveyCta() {
+  return (
+    <aside className="survey-cta">
+      <div className="survey-cta-copy">
+        <span className="survey-cta-label">Join the live survey</span>
+        <strong>Scan to answer</strong>
+      </div>
+      <div className="survey-qr">
+        <QRCodeSVG value={SURVEY_URL} size={108} bgColor="#ffffff" fgColor="#050713" level="M" includeMargin />
+      </div>
+      <a className="survey-url" href={SURVEY_URL} target="_blank" rel="noreferrer">
+        {SURVEY_URL}
+      </a>
+    </aside>
   );
 }
 

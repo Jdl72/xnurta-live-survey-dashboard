@@ -31,10 +31,6 @@ vi.mock('./surveyData', async () => {
 
 import { buildDashboardSnapshot, fetchSurveyRows, mockRows } from './surveyData';
 
-function findByTextContent(text) {
-  return screen.findByText((_, node) => node?.textContent === text);
-}
-
 function getMetricCard(label) {
   return screen.getByText(label).closest('.metric-card');
 }
@@ -58,7 +54,7 @@ describe('App', () => {
     render(<App />);
 
     expect(screen.getByRole('heading', { name: 'Capturing Signal' })).toBeInTheDocument();
-    expect(await findByTextContent('SourceLive sheet')).toBeInTheDocument();
+    expect(screen.getByText('Live audience survey')).toBeInTheDocument();
     expect(screen.getAllByRole('heading', { level: 2 }).length).toBeGreaterThanOrEqual(1);
     expect(screen.getByRole('button', { name: 'Dashboard' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Slide loop' })).toHaveClass('view-toggle-button-active');
@@ -80,7 +76,7 @@ describe('App', () => {
     render(<App />);
 
     await waitFor(() => expect(fetchSurveyRows).toHaveBeenCalledTimes(1));
-    await findByTextContent('SourceLive sheet');
+    expect(screen.getByText('Live audience survey')).toBeInTheDocument();
     expect(getMetricCard('Responses')).toHaveTextContent('2');
 
     await act(async () => {
@@ -98,10 +94,9 @@ describe('App', () => {
 
     render(<App />);
 
+    await waitFor(() => expect(fetchSurveyRows).toHaveBeenCalledTimes(1));
     await waitFor(() =>
-      expect(document.querySelector('.status-error')).toHaveTextContent(
-        'Google Sheets fetch failed with status 500.',
-      ),
+      expect(document.body.textContent).toContain('Google Sheets fetch failed with status 500.'),
     );
     expect(screen.getByRole('heading', { name: 'Capturing Signal' })).toBeInTheDocument();
   });
@@ -184,7 +179,7 @@ describe('App', () => {
     expect(screen.getByText('1 / 8')).toBeInTheDocument();
 
     await act(async () => {
-      const slideInterval = intervalSpy.mock.calls.find(([, delay]) => delay === 8000)?.[0];
+      const slideInterval = intervalSpy.mock.calls.find(([, delay]) => delay === 14000)?.[0];
       await slideInterval();
     });
 

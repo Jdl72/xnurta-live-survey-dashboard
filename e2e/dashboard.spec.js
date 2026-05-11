@@ -19,7 +19,8 @@ test('renders the dashboard with sheet-backed data and no page crashes', async (
 
   await expect(page.getByRole('heading', { name: 'Capturing Signal' })).toBeVisible();
   await expect(page.locator('.panel')).toHaveCount(1);
-  await expect(page.locator('.status-bar')).toContainText('Google Forms via published Google Sheet');
+  await expect(page.locator('.status-bar')).toContainText('Live audience survey');
+  await expect(page.locator('.survey-cta')).toContainText('Scan to answer');
   expect(pageErrors).toEqual([]);
 });
 
@@ -84,8 +85,8 @@ test('lets viewers navigate the slide loop manually', async ({ page }) => {
 
   await page.goto('/');
 
-  await expect(page.locator('.slide-counter')).toContainText('1 / 8');
+  await expect(page.locator('.slide-counter').first()).toContainText('1 / 8');
   await page.locator('.slide-dot').nth(1).click();
-  await expect(page.locator('.slide-counter')).toContainText('2 / 8');
+  await expect(page.locator('.slide-counter').last()).toContainText('2 / 8');
   await expect(page.getByText('Trust unlocks').first()).toBeVisible();
 });

@@ -48,7 +48,7 @@ textarea {
   min-height: 100vh;
   max-width: 1680px;
   margin: 0 auto;
-  padding: 24px 28px 32px;
+  padding: 24px 292px 180px 28px;
   overflow: hidden;
 }
 
@@ -233,7 +233,7 @@ textarea {
 }
 
 .status-bar > div:not(.status-error) {
-  min-width: 210px;
+  min-width: 180px;
 }
 
 .status-label {
@@ -275,6 +275,30 @@ textarea {
   gap: 18px;
   position: relative;
   z-index: 1;
+}
+
+.slide-stage {
+  position: relative;
+  min-height: 820px;
+}
+
+.slide-frame {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  align-content: start;
+  gap: 18px;
+}
+
+.slide-frame-active {
+  opacity: 1;
+  animation: slideFadeIn 700ms ease both;
+}
+
+.slide-frame-exiting {
+  opacity: 0;
+  animation: slideFadeOut 700ms ease both;
+  pointer-events: none;
 }
 
 .slide-meta {
@@ -462,6 +486,57 @@ textarea {
 
 .chart-wrap-slide {
   min-height: 560px;
+}
+
+.survey-cta {
+  position: fixed;
+  right: 28px;
+  bottom: 28px;
+  width: 236px;
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid rgba(78, 180, 254, 0.22);
+  border-radius: 16px;
+  background: rgba(17, 19, 27, 0.96);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.3);
+  z-index: 3;
+}
+
+.survey-cta-copy {
+  display: grid;
+  gap: 4px;
+}
+
+.survey-cta-label {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.survey-cta-copy strong {
+  color: #ffffff;
+  font-family: 'Sora', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 1.3rem;
+  line-height: 1.1;
+}
+
+.survey-qr {
+  display: grid;
+  place-items: center;
+  padding: 10px;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.survey-url {
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 11px;
+  line-height: 1.35;
+  word-break: break-all;
+  text-decoration: none;
 }
 
 .chart-wrap-split {
@@ -657,6 +732,26 @@ textarea {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
 }
 
+@keyframes slideFadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideFadeOut {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
 @media (max-width: 1100px) {
   .hero,
   .section-grid-readiness,
@@ -677,6 +772,18 @@ textarea {
   .slide-meta {
     display: grid;
     align-items: flex-start;
+  }
+
+  .page-shell {
+    padding-right: 28px;
+    padding-bottom: 260px;
+  }
+
+  .survey-cta {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    width: 100%;
   }
 }
 
