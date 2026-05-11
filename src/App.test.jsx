@@ -61,6 +61,8 @@ describe('App', () => {
     expect(await findByTextContent('SourceLive sheet')).toBeInTheDocument();
     expect(screen.getAllByRole('heading', { level: 2 }).length).toBeGreaterThanOrEqual(1);
     expect(screen.getByRole('button', { name: 'Dashboard' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Slide loop' })).toHaveClass('view-toggle-button-active');
+    expect(screen.getByText('1 / 8')).toBeInTheDocument();
   }, 10000);
 
   test('refreshes data on the configured interval', async () => {
@@ -168,4 +170,52 @@ describe('App', () => {
     expect(screen.getByRole('button', { name: 'Dashboard' })).toHaveClass('view-toggle-button-active');
     expect(screen.getAllByRole('heading', { level: 2 }).length).toBeGreaterThanOrEqual(3);
   });
+
+  test('auto-advances slides in slide loop mode', async () => {
+    fetchSurveyRows.mockResolvedValue({
+      rows: mockRows.slice(0, 2),
+      sourceLabel: 'Live sheet',
+    });
+    const intervalSpy = vi.spyOn(window, 'setInterval');
+
+    render(<App />);
+
+    await waitFor(() => expect(fetchSurveyRows).toHaveBeenCalledTimes(1));
+    expect(screen.getByText('1 / 8')).toBeInTheDocument();
+
+    await act(async () => {
+      const slideInterval = intervalSpy.mock.calls.find(([, delay]) => delay === 8000)?.[0];
+      await slideInterval();
+    });
+
+    expect(screen.getByText('2 / 8')).toBeInTheDocument();
+    expect(screen.getAllByText('Trust unlocks').length).toBeGreaterThan(0);
+  }, 10000);
+
+  test('auto-rotates dashboard sections after switching views', async () => {
+    fetchSurveyRows.mockResolvedValue({
+      rows: mockRows.slice(0, 2),
+      sourceLabel: 'Live sheet',
+    });
+    const intervalSpy = vi.spyOn(window, 'setInterval');
+
+    render(<App />);
+
+    await waitFor(() => expect(fetchSurveyRows).toHaveBeenCalledTimes(1));
+
+    await act(async () => {
+      screen.getByRole('button', { name: 'Dashboard' }).click();
+    });
+
+    expect(screen.getByText('How prepared the room feels')).toBeInTheDocument();
+    expect(document.querySelectorAll('.panel')).toHaveLength(3);
+
+    await act(async () => {
+      const dashboardInterval = intervalSpy.mock.calls.find(([, delay]) => delay === 12000)?.[0];
+      await dashboardInterval();
+    });
+
+    expect(screen.getByText('Where retail media teams lose the most energy')).toBeInTheDocument();
+    expect(document.querySelectorAll('.panel')).toHaveLength(2);
+  }, 10000);
 });

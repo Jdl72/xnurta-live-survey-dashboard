@@ -72,3 +72,20 @@ test('lets viewers switch back to dashboard mode', async ({ page }) => {
   await expect(page.locator('.panel')).toHaveCount(3);
   await expect(page.locator('.section-switcher')).toBeVisible();
 });
+
+test('lets viewers navigate the slide loop manually', async ({ page }) => {
+  await page.route(sheetPattern, async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'text/csv',
+      body: liveSheetCsv,
+    });
+  });
+
+  await page.goto('/');
+
+  await expect(page.locator('.slide-counter')).toContainText('1 / 8');
+  await page.locator('.slide-dot').nth(1).click();
+  await expect(page.locator('.slide-counter')).toContainText('2 / 8');
+  await expect(page.getByText('Trust unlocks').first()).toBeVisible();
+});
