@@ -462,9 +462,10 @@ function ChartRenderer({ panel, mode = 'dashboard' }) {
 function HorizontalBarChart({ data, color, mode }) {
   const isSlide = mode === 'slide';
   const axisWidth = getCategoryAxisWidth(data, isSlide ? 360 : 220, isSlide ? 520 : 300, isSlide ? 27 : 24, isSlide ? 9.5 : 7.2);
+  const chartHeight = getHorizontalChartHeight(data, isSlide, isSlide ? 27 : 24);
   return (
     <div className={`chart-wrap ${isSlide ? 'chart-wrap-slide' : ''}`}>
-      <ResponsiveContainer width="100%" height={isSlide ? 520 : 240}>
+      <ResponsiveContainer width="100%" height={chartHeight}>
         <RechartsBarChart data={data} layout="vertical" margin={{ top: 8, right: 64, left: isSlide ? 24 : 12, bottom: 0 }}>
           <CartesianGrid horizontal={false} stroke="rgba(73, 73, 69, 0.12)" />
           <XAxis type="number" allowDecimals={false} tick={isSlide ? slideTickStyle : tickStyle} axisLine={false} tickLine={false} />
@@ -495,9 +496,10 @@ function HorizontalBarChart({ data, color, mode }) {
 
 function VerticalBarChart({ data, color, mode }) {
   const isSlide = mode === 'slide';
+  const chartHeight = getVerticalChartHeight(data, isSlide, isSlide ? 16 : 12);
   return (
     <div className={`chart-wrap ${isSlide ? 'chart-wrap-slide' : ''}`}>
-      <ResponsiveContainer width="100%" height={isSlide ? 520 : 250}>
+      <ResponsiveContainer width="100%" height={chartHeight}>
         <RechartsBarChart data={data} margin={{ top: 18, right: 10, left: 0, bottom: 10 }}>
           <CartesianGrid vertical={false} stroke="rgba(73, 73, 69, 0.12)" />
           <XAxis
@@ -529,9 +531,10 @@ function VerticalBarChart({ data, color, mode }) {
 function DistributionBarChart({ data, mode }) {
   const isSlide = mode === 'slide';
   const axisWidth = getCategoryAxisWidth(data, isSlide ? 380 : 230, isSlide ? 560 : 320, isSlide ? 29 : 25, isSlide ? 9.8 : 7.4);
+  const chartHeight = getHorizontalChartHeight(data, isSlide, isSlide ? 29 : 25);
   return (
     <div className={`chart-wrap ${isSlide ? 'chart-wrap-slide' : ''}`}>
-      <ResponsiveContainer width="100%" height={isSlide ? 520 : 240}>
+      <ResponsiveContainer width="100%" height={chartHeight}>
         <RechartsBarChart data={data} layout="vertical" margin={{ top: 8, right: 64, left: isSlide ? 24 : 10, bottom: 0 }}>
           <CartesianGrid horizontal={false} stroke="rgba(73, 73, 69, 0.12)" />
           <XAxis type="number" allowDecimals={false} tick={isSlide ? slideTickStyle : tickStyle} axisLine={false} tickLine={false} />
@@ -708,6 +711,35 @@ function wrapLabel(value, maxCharsPerLine) {
   }
 
   return lines.length ? lines : [''];
+}
+
+function getHorizontalChartHeight(data, isSlide, maxCharsPerLine) {
+  const basePadding = isSlide ? 80 : 36;
+  const lineHeight = isSlide ? 28 : 16;
+  const barHeight = isSlide ? 48 : 28;
+  const rowGap = isSlide ? 24 : 12;
+
+  const contentHeight = data.reduce((total, item) => {
+    const lineCount = wrapLabel(String(item.label ?? ''), maxCharsPerLine).length;
+    const labelHeight = lineCount * lineHeight;
+    const rowHeight = Math.max(barHeight, labelHeight);
+    return total + rowHeight + rowGap;
+  }, 0);
+
+  const minHeight = isSlide ? 280 : 180;
+  const maxHeight = isSlide ? 520 : 320;
+  return Math.min(maxHeight, Math.max(minHeight, basePadding + contentHeight));
+}
+
+function getVerticalChartHeight(data, isSlide, maxCharsPerLine) {
+  const tallestLabelLines = data.reduce((max, item) => {
+    return Math.max(max, wrapLabel(String(item.label ?? ''), maxCharsPerLine).length);
+  }, 1);
+
+  const labelBlockHeight = tallestLabelLines * (isSlide ? 24 : 14);
+  const baseHeight = isSlide ? 320 : 190;
+  const dynamicHeight = baseHeight + labelBlockHeight;
+  return Math.min(isSlide ? 520 : 300, dynamicHeight);
 }
 
 function WrappedYAxisTick({ x, y, payload, maxCharsPerLine, fontSize }) {

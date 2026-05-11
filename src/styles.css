@@ -509,7 +509,7 @@ textarea {
 }
 
 .chart-wrap-slide {
-  min-height: 560px;
+  min-height: 0;
 }
 
 .survey-cta {
