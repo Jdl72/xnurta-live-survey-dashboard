@@ -1,8 +1,8 @@
 :root {
   color-scheme: dark;
-  --bg: #020202;
-  --bg-elevated: #16181f;
-  --bg-rail: #0b0d12;
+  --bg: #0500bf;
+  --bg-elevated: #1638d9;
+  --bg-rail: #0d17bf;
   --surface: #f4f3ef;
   --surface-muted: #dfddd7;
   --surface-border: #d5d1c8;
@@ -10,11 +10,11 @@
   --text-strong: #0a0b10;
   --text-secondary: #474440;
   --text-muted: #8d8a84;
-  --electric-blue: #6aa7eb;
-  --mid-blue: #86b6ef;
-  --deep-blue: #1f2c59;
-  --ink-blue: #27345f;
-  --alert-orange: #6aa7eb;
+  --electric-blue: #2d69ff;
+  --mid-blue: #8db4ff;
+  --deep-blue: #0500bf;
+  --ink-blue: #2444b8;
+  --alert-orange: #ff5b00;
   --shadow-soft: 0 2px 13px rgba(0, 0, 0, 0.2);
   --shadow-card: 0 16px 48px rgba(0, 0, 0, 0.24);
 }
@@ -32,9 +32,9 @@ body,
 
 body {
   background:
-    radial-gradient(circle at top left, rgba(106, 167, 235, 0.1), transparent 24%),
-    radial-gradient(circle at 80% 72%, rgba(31, 44, 89, 0.18), transparent 28%),
-    linear-gradient(180deg, #020202 0%, #05060a 56%, #0b0d12 100%);
+    radial-gradient(circle at top left, rgba(141, 180, 255, 0.18), transparent 24%),
+    radial-gradient(circle at 82% 74%, rgba(255, 91, 0, 0.12), transparent 24%),
+    linear-gradient(180deg, #0500bf 0%, #1737df 54%, #0d17bf 100%);
   color: var(--text);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
@@ -66,13 +66,13 @@ textarea {
 .page-glow-left {
   top: -10rem;
   left: -7rem;
-  background: var(--electric-blue);
+  background: var(--mid-blue);
 }
 
 .page-glow-right {
   right: -8rem;
   bottom: 4rem;
-  background: var(--deep-blue);
+  background: var(--alert-orange);
 }
 
 .brand-bar,
@@ -143,10 +143,10 @@ textarea {
 .view-toggle-button {
   min-height: 38px;
   padding: 8px 14px;
-  border: 1px solid rgba(106, 167, 235, 0.24);
+  border: 1px solid rgba(141, 180, 255, 0.28);
   border-radius: 999px;
-  background: rgba(22, 24, 31, 0.92);
-  color: #deecfb;
+  background: rgba(5, 9, 78, 0.45);
+  color: #ffffff;
   font-size: 13px;
   font-weight: 600;
   line-height: 18px;
@@ -154,8 +154,8 @@ textarea {
 }
 
 .view-toggle-button-active {
-  background: rgba(106, 167, 235, 0.18);
-  border-color: rgba(106, 167, 235, 0.45);
+  background: rgba(141, 180, 255, 0.2);
+  border-color: rgba(141, 180, 255, 0.52);
   color: #ffffff;
 }
 
@@ -174,7 +174,7 @@ textarea {
   top: -14px;
   right: -150px;
   z-index: -1;
-  opacity: 0.12;
+  opacity: 0.08;
   pointer-events: none;
 }
 
@@ -186,7 +186,7 @@ textarea {
 
 .eyebrow {
   margin: 0 0 6px;
-  color: var(--electric-blue);
+  color: var(--mid-blue);
   text-transform: uppercase;
   letter-spacing: 0.12em;
   font-size: 10px;
@@ -195,27 +195,44 @@ textarea {
 }
 
 .hero h1,
+.hero-title em,
 .section-heading h2,
 .panel-header h2,
 .metric-card strong,
 .confidence-score strong {
-  font-family: 'Sora', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: 'Space Grotesk', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
-.hero h1 {
-  max-width: 8ch;
+.hero-title {
+  display: grid;
+  gap: 6px;
+  max-width: 11ch;
   margin: 0;
-  font-size: clamp(3.1rem, 5vw, 4.9rem);
   font-weight: 600;
   line-height: 0.92;
 }
 
+.hero-title span {
+  display: block;
+  font-size: clamp(3.1rem, 5vw, 4.9rem);
+}
+
+.hero-title em {
+  display: block;
+  font-style: normal;
+  font-size: clamp(1.1rem, 1.9vw, 1.55rem);
+  line-height: 1.05;
+  color: var(--mid-blue);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
 .hero-text {
-  max-width: 34rem;
-  margin: 10px 0 0;
+  max-width: 28rem;
+  margin: 14px 0 0;
   color: rgba(255, 255, 255, 0.82);
-  font-size: 17px;
-  line-height: 25px;
+  font-size: 15px;
+  line-height: 22px;
 }
 
 .hero-meta {
@@ -228,25 +245,27 @@ textarea {
 .metric-card {
   min-height: 92px;
   padding: 14px 18px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(141, 180, 255, 0.16);
   border-radius: 12px;
-  background: linear-gradient(180deg, rgba(22, 24, 31, 0.96), rgba(8, 9, 13, 0.98));
+  background: linear-gradient(180deg, rgba(7, 16, 116, 0.44), rgba(4, 8, 76, 0.3));
   box-shadow: var(--shadow-soft);
 }
 
 .metric-card span {
   display: block;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 14px;
+  color: rgba(255, 255, 255, 0.76);
+  font-size: 13px;
   font-weight: 500;
-  line-height: 20px;
+  line-height: 18px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
 
 .metric-card strong {
   display: block;
   margin-top: 8px;
   color: var(--text);
-  font-size: clamp(1.9rem, 3.1vw, 2.8rem);
+  font-size: clamp(1.7rem, 2.7vw, 2.3rem);
   line-height: 1;
   font-weight: 600;
 }
@@ -318,7 +337,7 @@ textarea {
 
 .slide-meta h2 {
   margin: 0;
-  font-family: 'Sora', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: 'Space Grotesk', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: clamp(2.8rem, 4vw, 4rem);
   line-height: 0.98;
   color: var(--text);
@@ -331,10 +350,10 @@ textarea {
   min-height: 54px;
   padding: 0 18px;
   border-radius: 999px;
-  background: rgba(32, 34, 40, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(4, 10, 88, 0.42);
+  border: 1px solid rgba(141, 180, 255, 0.18);
   color: #ffffff;
-  font-family: 'Sora', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: 'Space Grotesk', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: 1.35rem;
 }
 
@@ -372,9 +391,9 @@ textarea {
 .section-pill {
   min-height: 44px;
   padding: 10px 16px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(141, 180, 255, 0.16);
   border-radius: 999px;
-  background: rgba(32, 34, 40, 0.84);
+  background: rgba(4, 10, 88, 0.34);
   color: rgba(255, 255, 255, 0.76);
   font-size: 14px;
   font-weight: 600;
@@ -384,8 +403,8 @@ textarea {
 }
 
 .section-pill-active {
-  border-color: rgba(78, 180, 254, 0.45);
-  background: rgba(106, 167, 235, 0.16);
+  border-color: rgba(141, 180, 255, 0.48);
+  background: rgba(141, 180, 255, 0.18);
   color: #ffffff;
 }
 
@@ -520,11 +539,11 @@ textarea {
   display: grid;
   gap: 12px;
   padding: 16px;
-  border: 1px solid rgba(106, 167, 235, 0.22);
+  border: 1px solid rgba(141, 180, 255, 0.28);
   border-radius: 16px;
   background:
-    linear-gradient(180deg, rgba(12, 13, 18, 0.98), rgba(5, 6, 10, 0.98)),
-    radial-gradient(circle at top right, rgba(106, 167, 235, 0.12), transparent 34%);
+    linear-gradient(180deg, rgba(7, 16, 116, 0.68), rgba(4, 8, 76, 0.52)),
+    radial-gradient(circle at top right, rgba(255, 91, 0, 0.14), transparent 34%);
   box-shadow: 0 14px 32px rgba(0, 0, 0, 0.3);
   z-index: 3;
 }

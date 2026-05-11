@@ -54,12 +54,12 @@ describe('App', () => {
     render(<App />);
 
     await waitFor(() => expect(fetchSurveyRows).toHaveBeenCalledTimes(1));
-    expect(screen.getByRole('heading', { name: 'Capturing Signal' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /Capturing Signal/i })).toBeInTheDocument();
     expect(screen.getByAltText('Signal to Scale 2026')).toBeInTheDocument();
     expect(screen.getByLabelText('Presented by Xnurta')).toBeInTheDocument();
     expect(
       screen.getByText(
-        'Live audience sentiment across AI readiness, retail media friction, and program maturity.',
+        'Responses update live as the room weighs in.',
       ),
     ).toBeInTheDocument();
     expect(screen.getAllByRole('heading', { level: 2 }).length).toBeGreaterThanOrEqual(1);
@@ -107,7 +107,7 @@ describe('App', () => {
         'Google Sheets fetch failed with status 500.',
       ),
     );
-    expect(screen.getByRole('heading', { name: 'Capturing Signal' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /Capturing Signal/i })).toBeInTheDocument();
   });
 
   test('clears the refresh interval on unmount', async () => {

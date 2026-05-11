@@ -219,11 +219,11 @@ function App() {
             <img src={signalToScaleLogoShadow} alt="" />
           </div>
           <div className="hero-copy">
-            <p className="eyebrow">Live Audience Survey</p>
-            <h1>Capturing Signal</h1>
-            <p className="hero-text">
-              Live audience sentiment across AI readiness, retail media friction, and program maturity.
-            </p>
+            <h1 className="hero-title">
+              <span>Capturing Signal</span>
+              <em>Live audience survey</em>
+            </h1>
+            <p className="hero-text">Responses update live as the room weighs in.</p>
           </div>
 
           <div className="hero-meta">
