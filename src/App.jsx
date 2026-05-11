@@ -737,9 +737,9 @@ function getVerticalChartHeight(data, isSlide, maxCharsPerLine) {
   }, 1);
 
   const labelBlockHeight = tallestLabelLines * (isSlide ? 24 : 14);
-  const baseHeight = isSlide ? 320 : 190;
+  const baseHeight = isSlide ? 460 : 190;
   const dynamicHeight = baseHeight + labelBlockHeight;
-  return Math.min(isSlide ? 520 : 300, dynamicHeight);
+  return Math.min(isSlide ? 620 : 300, dynamicHeight);
 }
 
 function WrappedYAxisTick({ x, y, payload, maxCharsPerLine, fontSize }) {
