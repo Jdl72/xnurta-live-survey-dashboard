@@ -58,7 +58,7 @@ describe('App', () => {
     expect(screen.getAllByText('Signal to Scale 2026').length).toBeGreaterThan(0);
     expect(
       screen.getByText(
-        "Live audience survey for Xnurta's executive summit on retail media, agentic AI, and measurement.",
+        'Real-time audience sentiment from Signal to Scale 2026 across AI readiness, retail media friction, and program maturity.',
       ),
     ).toBeInTheDocument();
     expect(screen.getAllByRole('heading', { level: 2 }).length).toBeGreaterThanOrEqual(1);

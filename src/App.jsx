@@ -19,8 +19,9 @@ import {
   fetchSurveyRows,
   mockRows,
 } from './surveyData';
-import xnurtaLogoWhite from './assets/xnurta-logo-white.png';
-import xnurtaIconColor from './assets/xnurta-icon-color.png';
+import signalToScaleLogoWhite from './assets/signal-to-scale-logo-white.png';
+import signalToScaleLogoShadow from './assets/signal-to-scale-logo-shadow.png';
+import xnurtaLogoWhite from './assets/xnurta-logo-white-2025.png';
 
 const SECTION_ROTATE_MS = 12000;
 const SLIDE_ROTATE_MS = 14000;
@@ -188,11 +189,11 @@ function App() {
         <div className="page-glow page-glow-left" />
         <div className="page-glow page-glow-right" />
         <header className="brand-bar">
-          <div className="brand-lockup">
-            <img className="brand-icon-image" src={xnurtaIconColor} alt="" aria-hidden="true" />
-            <div>
-              <img className="brand-logo" src={xnurtaLogoWhite} alt="Xnurta" />
-              <p className="brand-tag">Live audience pulse</p>
+          <div className="brand-lockup brand-lockup-event">
+            <img className="event-logo" src={signalToScaleLogoWhite} alt="Signal to Scale 2026" />
+            <div className="presenter-lockup">
+              <span className="presenter-label">Presented by</span>
+              <img className="presenter-logo" src={xnurtaLogoWhite} alt="Xnurta" />
             </div>
           </div>
           <div className="view-toggle" aria-label="Display mode">
@@ -214,11 +215,14 @@ function App() {
         </header>
 
         <section className="hero">
+          <div className="hero-watermark" aria-hidden="true">
+            <img src={signalToScaleLogoShadow} alt="" />
+          </div>
           <div className="hero-copy">
-            <p className="eyebrow">Signal to Scale 2026</p>
+            <p className="eyebrow">Live Audience Survey</p>
             <h1>Capturing Signal</h1>
             <p className="hero-text">
-              Live audience survey for Xnurta&apos;s executive summit on retail media, agentic AI, and measurement.
+              Real-time audience sentiment from Signal to Scale 2026 across AI readiness, retail media friction, and program maturity.
             </p>
           </div>
 
@@ -236,16 +240,16 @@ function App() {
 
         <section className="status-bar">
           <div>
-            <span className="status-label">Event</span>
+            <span className="status-label">Summit</span>
             <strong>Signal to Scale 2026</strong>
           </div>
           <div>
-            <span className="status-label">Theme</span>
+            <span className="status-label">Focus</span>
             <strong>Retail media + agentic AI</strong>
           </div>
           <div>
-            <span className="status-label">Prompt</span>
-            <strong>Signal to scale, live</strong>
+            <span className="status-label">Presented by</span>
+            <strong>Xnurta</strong>
           </div>
           {status.error ? <div className="status-error">{status.error}</div> : null}
         </section>
