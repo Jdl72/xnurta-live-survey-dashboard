@@ -36,6 +36,10 @@ npm run test:e2e
 npm run build
 ```
 
+## Deployment
+
+The site can be published as a static build to GitHub Pages, Vercel, Netlify, or any static hosting provider.
+
 ## Survey Configuration
 
 Google Sheets polling and field mapping live in `src/surveyData.js`.
