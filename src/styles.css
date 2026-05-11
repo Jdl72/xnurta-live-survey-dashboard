@@ -292,14 +292,6 @@ textarea {
   color: var(--text);
 }
 
-.slide-question {
-  max-width: 48rem;
-  margin: 14px 0 0;
-  color: rgba(255, 255, 255, 0.82);
-  font-size: clamp(1.1rem, 1.8vw, 1.5rem);
-  line-height: 1.4;
-}
-
 .slide-counter {
   display: inline-flex;
   align-items: center;
@@ -443,8 +435,9 @@ textarea {
 }
 
 .panel-slide-hero .panel-header h2 {
-  font-size: clamp(2.4rem, 3.8vw, 3.6rem);
-  line-height: 1;
+  max-width: 28ch;
+  font-size: clamp(2rem, 3vw, 2.9rem);
+  line-height: 1.08;
 }
 
 .panel-cyan {

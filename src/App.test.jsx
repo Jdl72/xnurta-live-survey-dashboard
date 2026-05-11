@@ -57,7 +57,7 @@ describe('App', () => {
 
     render(<App />);
 
-    expect(screen.getByRole('heading', { name: 'What the room thinks' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Capturing Signal' })).toBeInTheDocument();
     expect(await findByTextContent('SourceLive sheet')).toBeInTheDocument();
     expect(screen.getAllByRole('heading', { level: 2 }).length).toBeGreaterThanOrEqual(1);
     expect(screen.getByRole('button', { name: 'Dashboard' })).toBeInTheDocument();
@@ -103,7 +103,7 @@ describe('App', () => {
         'Google Sheets fetch failed with status 500.',
       ),
     );
-    expect(screen.getByRole('heading', { name: 'What the room thinks' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Capturing Signal' })).toBeInTheDocument();
   });
 
   test('clears the refresh interval on unmount', async () => {

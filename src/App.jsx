@@ -187,7 +187,7 @@ function App() {
         <section className="hero">
           <div className="hero-copy">
             <p className="eyebrow">Retail Media + Agentic AI</p>
-            <h1>What the room thinks</h1>
+            <h1>Capturing Signal</h1>
             <p className="hero-text">
               Real-time audience sentiment across AI readiness, retail media friction, and program maturity.
             </p>
@@ -282,7 +282,6 @@ function SlideLoop({ slide, slideIndex, slideCount, slides, onSelectSlide }) {
         <div>
           <p className="eyebrow">{slide.sectionEyebrow}</p>
           <h2>{slide.title}</h2>
-          <p className="slide-question">{slide.question}</p>
         </div>
         <div className="slide-counter">
           <span>
@@ -291,7 +290,7 @@ function SlideLoop({ slide, slideIndex, slideCount, slides, onSelectSlide }) {
         </div>
       </div>
 
-      <Panel title={slide.title} accent={slide.accent} variant="slide-hero">
+      <Panel title={slide.question} accent={slide.accent} variant="slide-hero">
         <DashboardErrorBoundary compact>
           <ChartRenderer panel={slide} mode="slide" />
         </DashboardErrorBoundary>
