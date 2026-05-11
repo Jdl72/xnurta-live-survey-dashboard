@@ -461,7 +461,7 @@ function ChartRenderer({ panel, mode = 'dashboard' }) {
 
 function HorizontalBarChart({ data, color, mode }) {
   const isSlide = mode === 'slide';
-  const axisWidth = getCategoryAxisWidth(data, isSlide ? 360 : 220, isSlide ? 520 : 300, isSlide ? 9.5 : 7.2);
+  const axisWidth = getCategoryAxisWidth(data, isSlide ? 360 : 220, isSlide ? 520 : 300, isSlide ? 27 : 24, isSlide ? 9.5 : 7.2);
   return (
     <div className={`chart-wrap ${isSlide ? 'chart-wrap-slide' : ''}`}>
       <ResponsiveContainer width="100%" height={isSlide ? 520 : 240}>
@@ -472,7 +472,13 @@ function HorizontalBarChart({ data, color, mode }) {
             type="category"
             dataKey="label"
             width={axisWidth}
-            tick={isSlide ? slideTickStyle : tickStyle}
+            tick={(props) => (
+              <WrappedYAxisTick
+                {...props}
+                maxCharsPerLine={isSlide ? 27 : 24}
+                fontSize={isSlide ? 24 : 14}
+              />
+            )}
             axisLine={false}
             tickLine={false}
             tickMargin={14}
@@ -494,7 +500,21 @@ function VerticalBarChart({ data, color, mode }) {
       <ResponsiveContainer width="100%" height={isSlide ? 520 : 250}>
         <RechartsBarChart data={data} margin={{ top: 18, right: 10, left: 0, bottom: 10 }}>
           <CartesianGrid vertical={false} stroke="rgba(73, 73, 69, 0.12)" />
-          <XAxis dataKey="label" tick={isSlide ? slideCompactTickStyle : compactTickStyle} axisLine={false} tickLine={false} interval={0} tickMargin={12} />
+          <XAxis
+            dataKey="label"
+            tick={(props) => (
+              <WrappedXAxisTick
+                {...props}
+                maxCharsPerLine={isSlide ? 16 : 12}
+                fontSize={isSlide ? 20 : 12}
+              />
+            )}
+            height={isSlide ? 88 : 56}
+            axisLine={false}
+            tickLine={false}
+            interval={0}
+            tickMargin={12}
+          />
           <YAxis allowDecimals={false} tick={isSlide ? slideTickStyle : tickStyle} axisLine={false} tickLine={false} width={isSlide ? 44 : 28} />
           <Tooltip contentStyle={tooltipStyle} cursor={{ fill: 'rgba(148, 163, 184, 0.08)' }} />
           <Bar dataKey="value" radius={[10, 10, 0, 0]} fill={color} maxBarSize={isSlide ? 140 : 96}>
@@ -508,7 +528,7 @@ function VerticalBarChart({ data, color, mode }) {
 
 function DistributionBarChart({ data, mode }) {
   const isSlide = mode === 'slide';
-  const axisWidth = getCategoryAxisWidth(data, isSlide ? 380 : 230, isSlide ? 560 : 320, isSlide ? 9.8 : 7.4);
+  const axisWidth = getCategoryAxisWidth(data, isSlide ? 380 : 230, isSlide ? 560 : 320, isSlide ? 29 : 25, isSlide ? 9.8 : 7.4);
   return (
     <div className={`chart-wrap ${isSlide ? 'chart-wrap-slide' : ''}`}>
       <ResponsiveContainer width="100%" height={isSlide ? 520 : 240}>
@@ -519,7 +539,13 @@ function DistributionBarChart({ data, mode }) {
             type="category"
             dataKey="label"
             width={axisWidth}
-            tick={isSlide ? slideTickStyle : tickStyle}
+            tick={(props) => (
+              <WrappedYAxisTick
+                {...props}
+                maxCharsPerLine={isSlide ? 29 : 25}
+                fontSize={isSlide ? 24 : 14}
+              />
+            )}
             axisLine={false}
             tickLine={false}
             tickMargin={14}
@@ -639,14 +665,80 @@ const accentFill = {
 
 const accentRing = ['#6aa7eb', '#1f2c59', '#86b6ef', '#27345f', '#b7cde9'];
 
-function getCategoryAxisWidth(data, minWidth, maxWidth, charWidth) {
+function getCategoryAxisWidth(data, minWidth, maxWidth, maxCharsPerLine, charWidth) {
   const longestLabel = data.reduce((max, item) => {
-    const lines = String(item.label ?? '').split('\n');
+    const lines = wrapLabel(String(item.label ?? ''), maxCharsPerLine);
     const longestLine = lines.reduce((lineMax, line) => Math.max(lineMax, line.length), 0);
     return Math.max(max, longestLine);
   }, 0);
 
   return Math.min(maxWidth, Math.max(minWidth, Math.ceil(longestLabel * charWidth)));
+}
+
+function wrapLabel(value, maxCharsPerLine) {
+  const source = value.replace(/\s*\/\s*/g, ' / ');
+  const words = source.split(/\s+/).filter(Boolean);
+  const lines = [];
+  let currentLine = '';
+
+  for (const word of words) {
+    if (word.length > maxCharsPerLine) {
+      if (currentLine) {
+        lines.push(currentLine);
+        currentLine = '';
+      }
+
+      for (let index = 0; index < word.length; index += maxCharsPerLine) {
+        lines.push(word.slice(index, index + maxCharsPerLine));
+      }
+      continue;
+    }
+
+    const nextLine = currentLine ? `${currentLine} ${word}` : word;
+    if (nextLine.length <= maxCharsPerLine) {
+      currentLine = nextLine;
+    } else {
+      lines.push(currentLine);
+      currentLine = word;
+    }
+  }
+
+  if (currentLine) {
+    lines.push(currentLine);
+  }
+
+  return lines.length ? lines : [''];
+}
+
+function WrappedYAxisTick({ x, y, payload, maxCharsPerLine, fontSize }) {
+  const lines = wrapLabel(String(payload.value ?? ''), maxCharsPerLine);
+  const lineHeight = Math.round(fontSize * 1.15);
+  const startY = y - ((lines.length - 1) * lineHeight) / 2;
+
+  return (
+    <text x={x - 12} y={startY} textAnchor="end" fill="#494945" fontSize={fontSize} fontWeight={500}>
+      {lines.map((line, index) => (
+        <tspan key={`${payload.value}-${index}`} x={x - 12} dy={index === 0 ? 0 : lineHeight}>
+          {line}
+        </tspan>
+      ))}
+    </text>
+  );
+}
+
+function WrappedXAxisTick({ x, y, payload, maxCharsPerLine, fontSize }) {
+  const lines = wrapLabel(String(payload.value ?? ''), maxCharsPerLine);
+  const lineHeight = Math.round(fontSize * 1.15);
+
+  return (
+    <text x={x} y={y + 10} textAnchor="middle" fill="#494945" fontSize={fontSize} fontWeight={500}>
+      {lines.map((line, index) => (
+        <tspan key={`${payload.value}-${index}`} x={x} dy={index === 0 ? 0 : lineHeight}>
+          {line}
+        </tspan>
+      ))}
+    </text>
+  );
 }
 
 class DashboardErrorBoundary extends Component {

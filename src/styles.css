@@ -655,6 +655,8 @@ textarea {
   color: var(--text-secondary);
   font-size: 13px;
   line-height: 20px;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .confidence-scale-slide .confidence-row-copy span {
@@ -694,6 +696,11 @@ textarea {
   color: var(--text-secondary);
   font-size: 14px;
   line-height: 20px;
+}
+
+.split-legend-row span:nth-child(2) {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .chart-wrap-slide .split-legend-row {
