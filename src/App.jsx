@@ -22,10 +22,13 @@ import xnurtaLogoWhite from './assets/xnurta-logo-white.png';
 import xnurtaIconColor from './assets/xnurta-icon-color.png';
 
 const SECTION_ROTATE_MS = 12000;
+const SLIDE_ROTATE_MS = 8000;
 
 function App() {
   const [rows, setRows] = useState(mockRows);
+  const [viewMode, setViewMode] = useState('slides');
   const [activeSectionIndex, setActiveSectionIndex] = useState(0);
+  const [activeSlideIndex, setActiveSlideIndex] = useState(0);
   const [status, setStatus] = useState({
     sourceLabel: 'Demo mode',
     lastUpdated: new Date(),
@@ -109,8 +112,24 @@ function App() {
     [snapshot.panels],
   );
   const activeSection = sections[activeSectionIndex];
+  const slides = useMemo(
+    () =>
+      sections.flatMap((section) =>
+        section.panels.map((panel) => ({
+          ...panel,
+          sectionEyebrow: section.eyebrow,
+          sectionTitle: section.title,
+        })),
+      ),
+    [sections],
+  );
+  const activeSlide = slides[activeSlideIndex];
 
   useEffect(() => {
+    if (viewMode !== 'dashboard') {
+      return undefined;
+    }
+
     const timer = window.setInterval(() => {
       setActiveSectionIndex((current) => (current + 1) % sections.length);
     }, SECTION_ROTATE_MS);
@@ -118,7 +137,21 @@ function App() {
     return () => {
       window.clearInterval(timer);
     };
-  }, [sections.length]);
+  }, [sections.length, viewMode]);
+
+  useEffect(() => {
+    if (viewMode !== 'slides') {
+      return undefined;
+    }
+
+    const timer = window.setInterval(() => {
+      setActiveSlideIndex((current) => (current + 1) % slides.length);
+    }, SLIDE_ROTATE_MS);
+
+    return () => {
+      window.clearInterval(timer);
+    };
+  }, [slides.length, viewMode]);
 
   return (
     <DashboardErrorBoundary>
@@ -133,7 +166,22 @@ function App() {
               <p className="brand-tag">Live audience pulse</p>
             </div>
           </div>
-          <div className="brand-chip">Preview mode</div>
+          <div className="view-toggle" aria-label="Display mode">
+            <button
+              type="button"
+              className={`view-toggle-button ${viewMode === 'slides' ? 'view-toggle-button-active' : ''}`}
+              onClick={() => setViewMode('slides')}
+            >
+              Slide loop
+            </button>
+            <button
+              type="button"
+              className={`view-toggle-button ${viewMode === 'dashboard' ? 'view-toggle-button-active' : ''}`}
+              onClick={() => setViewMode('dashboard')}
+            >
+              Dashboard
+            </button>
+          </div>
         </header>
 
         <section className="hero">
@@ -163,32 +211,44 @@ function App() {
             <strong>{status.sourceLabel}</strong>
           </div>
           <div>
-            <span className="status-label">Now showing</span>
-            <strong>{activeSection.eyebrow}</strong>
+            <span className="status-label">View</span>
+            <strong>{viewMode === 'slides' ? 'Slide loop' : activeSection.eyebrow}</strong>
           </div>
           {status.error ? <div className="status-error">{status.error}</div> : null}
         </section>
 
-        <section className="section-switcher" aria-label="Dashboard sections">
-          {sections.map((section, index) => (
-            <button
-              key={section.key}
-              type="button"
-              className={`section-pill ${index === activeSectionIndex ? 'section-pill-active' : ''}`}
-              onClick={() => setActiveSectionIndex(index)}
-            >
-              {section.eyebrow}
-            </button>
-          ))}
-        </section>
+        {viewMode === 'slides' ? (
+          <SlideLoop
+            slide={activeSlide}
+            slideIndex={activeSlideIndex}
+            slideCount={slides.length}
+            onSelectSlide={setActiveSlideIndex}
+            slides={slides}
+          />
+        ) : (
+          <>
+            <section className="section-switcher" aria-label="Dashboard sections">
+              {sections.map((section, index) => (
+                <button
+                  key={section.key}
+                  type="button"
+                  className={`section-pill ${index === activeSectionIndex ? 'section-pill-active' : ''}`}
+                  onClick={() => setActiveSectionIndex(index)}
+                >
+                  {section.eyebrow}
+                </button>
+              ))}
+            </section>
 
-        <SectionBlock
-          eyebrow={activeSection.eyebrow}
-          title={activeSection.title}
-          layoutClass={activeSection.layoutClass}
-        >
-          <SectionPanels section={activeSection} />
-        </SectionBlock>
+            <SectionBlock
+              eyebrow={activeSection.eyebrow}
+              title={activeSection.title}
+              layoutClass={activeSection.layoutClass}
+            >
+              <SectionPanels section={activeSection} />
+            </SectionBlock>
+          </>
+        )}
       </main>
     </DashboardErrorBoundary>
   );
@@ -211,6 +271,42 @@ function SectionBlock({ eyebrow, title, layoutClass, children }) {
         <h2>{title}</h2>
       </div>
       <div className={`section-grid ${layoutClass}`}>{children}</div>
+    </section>
+  );
+}
+
+function SlideLoop({ slide, slideIndex, slideCount, slides, onSelectSlide }) {
+  return (
+    <section className="slide-loop">
+      <div className="slide-meta">
+        <div>
+          <p className="eyebrow">{slide.sectionEyebrow}</p>
+          <h2>{slide.title}</h2>
+        </div>
+        <div className="slide-counter">
+          <span>
+            {slideIndex + 1} / {slideCount}
+          </span>
+        </div>
+      </div>
+
+      <Panel title={slide.title} accent={slide.accent} variant="slide-hero">
+        <DashboardErrorBoundary compact>
+          <ChartRenderer panel={slide} mode="slide" />
+        </DashboardErrorBoundary>
+      </Panel>
+
+      <div className="slide-dots" aria-label="Slides">
+        {slides.map((entry, index) => (
+          <button
+            key={`${entry.key}-${index}`}
+            type="button"
+            className={`slide-dot ${index === slideIndex ? 'slide-dot-active' : ''}`}
+            aria-label={`Show ${entry.title}`}
+            onClick={() => onSelectSlide(index)}
+          />
+        ))}
+      </div>
     </section>
   );
 }
@@ -277,14 +373,14 @@ function Panel({ title, accent, children, variant = 'default' }) {
   );
 }
 
-function ChartRenderer({ panel }) {
+function ChartRenderer({ panel, mode = 'dashboard' }) {
   switch (panel.chart) {
     case 'horizontal-bar':
-      return <HorizontalBarChart data={panel.data} color={accentFill[panel.accent]} />;
+      return <HorizontalBarChart data={panel.data} color={accentFill[panel.accent]} mode={mode} />;
     case 'vertical-bar':
-      return <VerticalBarChart data={panel.data} color={accentFill[panel.accent]} />;
+      return <VerticalBarChart data={panel.data} color={accentFill[panel.accent]} mode={mode} />;
     case 'distribution-bar':
-      return <DistributionBarChart data={panel.data} />;
+      return <DistributionBarChart data={panel.data} mode={mode} />;
     case 'donut':
       return (
         <ConfidenceScaleChart
@@ -292,34 +388,36 @@ function ChartRenderer({ panel }) {
           value={panel.value}
           total={panel.total}
           accent={panel.accent}
+          mode={mode}
         />
       );
     case 'donut-split':
-      return <SplitDonutChart data={panel.data} />;
+      return <SplitDonutChart data={panel.data} mode={mode} />;
     default:
       return null;
   }
 }
 
-function HorizontalBarChart({ data, color }) {
+function HorizontalBarChart({ data, color, mode }) {
+  const isSlide = mode === 'slide';
   return (
-    <div className="chart-wrap">
-      <ResponsiveContainer width="100%" height={240}>
-        <RechartsBarChart data={data} layout="vertical" margin={{ top: 8, right: 42, left: 12, bottom: 0 }}>
+    <div className={`chart-wrap ${isSlide ? 'chart-wrap-slide' : ''}`}>
+      <ResponsiveContainer width="100%" height={isSlide ? 520 : 240}>
+        <RechartsBarChart data={data} layout="vertical" margin={{ top: 8, right: 64, left: 12, bottom: 0 }}>
           <CartesianGrid horizontal={false} stroke="rgba(73, 73, 69, 0.12)" />
-          <XAxis type="number" allowDecimals={false} tick={tickStyle} axisLine={false} tickLine={false} />
+          <XAxis type="number" allowDecimals={false} tick={isSlide ? slideTickStyle : tickStyle} axisLine={false} tickLine={false} />
           <YAxis
             type="category"
             dataKey="label"
-            width={210}
-            tick={tickStyle}
+            width={isSlide ? 320 : 210}
+            tick={isSlide ? slideTickStyle : tickStyle}
             axisLine={false}
             tickLine={false}
             tickMargin={14}
           />
           <Tooltip contentStyle={tooltipStyle} cursor={{ fill: 'rgba(148, 163, 184, 0.08)' }} />
-          <Bar dataKey="value" radius={[0, 10, 10, 0]} fill={color} barSize={28}>
-            <LabelList dataKey="value" position="right" fill="#050713" fontSize={14} fontWeight={600} />
+          <Bar dataKey="value" radius={[0, 10, 10, 0]} fill={color} barSize={isSlide ? 48 : 28}>
+            <LabelList dataKey="value" position="right" fill="#050713" fontSize={isSlide ? 26 : 14} fontWeight={600} />
           </Bar>
         </RechartsBarChart>
       </ResponsiveContainer>
@@ -327,17 +425,18 @@ function HorizontalBarChart({ data, color }) {
   );
 }
 
-function VerticalBarChart({ data, color }) {
+function VerticalBarChart({ data, color, mode }) {
+  const isSlide = mode === 'slide';
   return (
-    <div className="chart-wrap">
-      <ResponsiveContainer width="100%" height={250}>
+    <div className={`chart-wrap ${isSlide ? 'chart-wrap-slide' : ''}`}>
+      <ResponsiveContainer width="100%" height={isSlide ? 520 : 250}>
         <RechartsBarChart data={data} margin={{ top: 18, right: 10, left: 0, bottom: 10 }}>
           <CartesianGrid vertical={false} stroke="rgba(73, 73, 69, 0.12)" />
-          <XAxis dataKey="label" tick={compactTickStyle} axisLine={false} tickLine={false} interval={0} tickMargin={12} />
-          <YAxis allowDecimals={false} tick={tickStyle} axisLine={false} tickLine={false} width={28} />
+          <XAxis dataKey="label" tick={isSlide ? slideCompactTickStyle : compactTickStyle} axisLine={false} tickLine={false} interval={0} tickMargin={12} />
+          <YAxis allowDecimals={false} tick={isSlide ? slideTickStyle : tickStyle} axisLine={false} tickLine={false} width={isSlide ? 44 : 28} />
           <Tooltip contentStyle={tooltipStyle} cursor={{ fill: 'rgba(148, 163, 184, 0.08)' }} />
-          <Bar dataKey="value" radius={[10, 10, 0, 0]} fill={color} maxBarSize={96}>
-            <LabelList dataKey="value" position="top" fill="#050713" fontSize={14} fontWeight={600} />
+          <Bar dataKey="value" radius={[10, 10, 0, 0]} fill={color} maxBarSize={isSlide ? 140 : 96}>
+            <LabelList dataKey="value" position="top" fill="#050713" fontSize={isSlide ? 26 : 14} fontWeight={600} />
           </Bar>
         </RechartsBarChart>
       </ResponsiveContainer>
@@ -345,28 +444,29 @@ function VerticalBarChart({ data, color }) {
   );
 }
 
-function DistributionBarChart({ data }) {
+function DistributionBarChart({ data, mode }) {
+  const isSlide = mode === 'slide';
   return (
-    <div className="chart-wrap">
-      <ResponsiveContainer width="100%" height={240}>
-        <RechartsBarChart data={data} layout="vertical" margin={{ top: 8, right: 42, left: 10, bottom: 0 }}>
+    <div className={`chart-wrap ${isSlide ? 'chart-wrap-slide' : ''}`}>
+      <ResponsiveContainer width="100%" height={isSlide ? 520 : 240}>
+        <RechartsBarChart data={data} layout="vertical" margin={{ top: 8, right: 64, left: 10, bottom: 0 }}>
           <CartesianGrid horizontal={false} stroke="rgba(73, 73, 69, 0.12)" />
-          <XAxis type="number" allowDecimals={false} tick={tickStyle} axisLine={false} tickLine={false} />
+          <XAxis type="number" allowDecimals={false} tick={isSlide ? slideTickStyle : tickStyle} axisLine={false} tickLine={false} />
           <YAxis
             type="category"
             dataKey="label"
-            width={220}
-            tick={tickStyle}
+            width={isSlide ? 340 : 220}
+            tick={isSlide ? slideTickStyle : tickStyle}
             axisLine={false}
             tickLine={false}
             tickMargin={14}
           />
           <Tooltip contentStyle={tooltipStyle} cursor={{ fill: 'rgba(148, 163, 184, 0.08)' }} />
-          <Bar dataKey="value" radius={[0, 10, 10, 0]} barSize={28}>
+          <Bar dataKey="value" radius={[0, 10, 10, 0]} barSize={isSlide ? 48 : 28}>
             {data.map((item) => (
               <Cell key={item.label} fill={item.color} />
             ))}
-            <LabelList dataKey="value" position="right" fill="#050713" fontSize={14} fontWeight={600} />
+            <LabelList dataKey="value" position="right" fill="#050713" fontSize={isSlide ? 26 : 14} fontWeight={600} />
           </Bar>
         </RechartsBarChart>
       </ResponsiveContainer>
@@ -374,7 +474,8 @@ function DistributionBarChart({ data }) {
   );
 }
 
-function ConfidenceScaleChart({ data, value, total, accent }) {
+function ConfidenceScaleChart({ data, value, total, accent, mode }) {
+  const isSlide = mode === 'slide';
   const weightedData = data.map((item, index) => ({
     ...item,
     scaleValue: index + 1,
@@ -382,7 +483,7 @@ function ConfidenceScaleChart({ data, value, total, accent }) {
   }));
 
   return (
-    <div className="confidence-scale">
+    <div className={`confidence-scale ${isSlide ? 'confidence-scale-slide' : ''}`}>
       <div className="confidence-summary">
         <div className="confidence-score">
           <strong>{value.toFixed(1)} / {total}</strong>
@@ -420,16 +521,17 @@ function ConfidenceScaleChart({ data, value, total, accent }) {
   );
 }
 
-function SplitDonutChart({ data }) {
+function SplitDonutChart({ data, mode }) {
+  const isSlide = mode === 'slide';
   return (
-    <div className="chart-wrap chart-wrap-split">
-      <ResponsiveContainer width="100%" height={220}>
+    <div className={`chart-wrap chart-wrap-split ${isSlide ? 'chart-wrap-slide' : ''}`}>
+      <ResponsiveContainer width="100%" height={isSlide ? 360 : 220}>
         <PieChart>
           <Pie
             data={data}
             dataKey="value"
-            innerRadius={52}
-            outerRadius={82}
+            innerRadius={isSlide ? 86 : 52}
+            outerRadius={isSlide ? 132 : 82}
             paddingAngle={2}
             stroke="none"
           >
@@ -455,6 +557,8 @@ function SplitDonutChart({ data }) {
 
 const tickStyle = { fill: '#494945', fontSize: 14, fontWeight: 500 };
 const compactTickStyle = { fill: '#494945', fontSize: 12, fontWeight: 500 };
+const slideTickStyle = { fill: '#494945', fontSize: 24, fontWeight: 500 };
+const slideCompactTickStyle = { fill: '#494945', fontSize: 20, fontWeight: 500 };
 
 const tooltipStyle = {
   background: '#ffffff',

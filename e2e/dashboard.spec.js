@@ -18,7 +18,7 @@ test('renders the dashboard with sheet-backed data and no page crashes', async (
   await page.goto('/');
 
   await expect(page.getByRole('heading', { name: 'What the room thinks' })).toBeVisible();
-  await expect(page.locator('.panel')).toHaveCount(3);
+  await expect(page.locator('.panel')).toHaveCount(1);
   await expect(page.locator('.status-bar')).toContainText('Google Forms via published Google Sheet');
   expect(pageErrors).toEqual([]);
 });
@@ -36,7 +36,7 @@ test('shows a graceful error state when the sheet fetch fails', async ({ page })
 
   await expect(page.locator('.status-bar')).toContainText('Google Sheets fetch failed with status 500.');
   await expect(page.getByRole('heading', { name: 'What the room thinks' })).toBeVisible();
-  await expect(page.locator('.panel')).toHaveCount(3);
+  await expect(page.locator('.panel')).toHaveCount(1);
 });
 
 test('renders a stable empty-state dashboard when the sheet has no responses yet', async ({ page }) => {
@@ -53,6 +53,22 @@ test('renders a stable empty-state dashboard when the sheet has no responses yet
   await page.goto('/');
 
   await expect(page.getByRole('heading', { name: 'What the room thinks' })).toBeVisible();
-  await expect(page.locator('.panel')).toHaveCount(3);
+  await expect(page.locator('.panel')).toHaveCount(1);
   await expect(page.locator('.metric-card').filter({ hasText: 'Responses' })).toContainText('0');
+});
+
+test('lets viewers switch back to dashboard mode', async ({ page }) => {
+  await page.route(sheetPattern, async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'text/csv',
+      body: liveSheetCsv,
+    });
+  });
+
+  await page.goto('/');
+
+  await page.getByRole('button', { name: 'Dashboard' }).click();
+  await expect(page.locator('.panel')).toHaveCount(3);
+  await expect(page.locator('.section-switcher')).toBeVisible();
 });

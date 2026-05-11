@@ -59,7 +59,8 @@ describe('App', () => {
 
     expect(screen.getByRole('heading', { name: 'What the room thinks' })).toBeInTheDocument();
     expect(await findByTextContent('SourceLive sheet')).toBeInTheDocument();
-    expect(screen.getAllByRole('heading', { level: 2 }).length).toBeGreaterThan(3);
+    expect(screen.getAllByRole('heading', { level: 2 }).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getByRole('button', { name: 'Dashboard' })).toBeInTheDocument();
   }, 10000);
 
   test('refreshes data on the configured interval', async () => {
@@ -148,6 +149,23 @@ describe('App', () => {
       ),
     );
     expect(getMetricCard('Responses')).toHaveTextContent('2');
-    expect(screen.getAllByRole('heading', { level: 2 }).length).toBeGreaterThan(3);
+    expect(screen.getAllByRole('heading', { level: 2 }).length).toBeGreaterThanOrEqual(1);
+  });
+
+  test('toggles from slide loop to dashboard view', async () => {
+    fetchSurveyRows.mockResolvedValue({
+      rows: mockRows.slice(0, 2),
+      sourceLabel: 'Live sheet',
+    });
+
+    render(<App />);
+
+    await waitFor(() => expect(fetchSurveyRows).toHaveBeenCalledTimes(1));
+    await act(async () => {
+      screen.getByRole('button', { name: 'Dashboard' }).click();
+    });
+
+    expect(screen.getByRole('button', { name: 'Dashboard' })).toHaveClass('view-toggle-button-active');
+    expect(screen.getAllByRole('heading', { level: 2 }).length).toBeGreaterThanOrEqual(3);
   });
 });
