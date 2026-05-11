@@ -9,6 +9,7 @@ export function makePanel(key, overrides = {}) {
   const base = {
     accent: 'cyan',
     title: key,
+    question: `${key} question`,
     data: [{ label: 'A', value: 1 }],
   };
 

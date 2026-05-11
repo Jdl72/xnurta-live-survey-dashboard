@@ -282,6 +282,7 @@ function SlideLoop({ slide, slideIndex, slideCount, slides, onSelectSlide }) {
         <div>
           <p className="eyebrow">{slide.sectionEyebrow}</p>
           <h2>{slide.title}</h2>
+          <p className="slide-question">{slide.question}</p>
         </div>
         <div className="slide-counter">
           <span>

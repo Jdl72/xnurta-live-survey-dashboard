@@ -145,6 +145,7 @@ export function buildDashboardSnapshot(rows, config) {
         accent: 'cyan',
         chart: 'donut',
         title: 'Confidence in agentic AI',
+        question: config.fields.confidence,
         data: confidenceData,
         total: 4,
         value: confidenceScore,
@@ -154,6 +155,7 @@ export function buildDashboardSnapshot(rows, config) {
         accent: 'coral',
         chart: 'horizontal-bar',
         title: 'Trust unlocks',
+        question: config.fields.trust,
         data: trustData,
       },
       {
@@ -161,6 +163,7 @@ export function buildDashboardSnapshot(rows, config) {
         accent: 'gold',
         chart: 'distribution-bar',
         title: 'AI team model',
+        question: config.fields.organization,
         data: organizationData,
       },
       {
@@ -168,6 +171,7 @@ export function buildDashboardSnapshot(rows, config) {
         accent: 'mint',
         chart: 'horizontal-bar',
         title: 'Operational drain',
+        question: config.fields.operationalDrain,
         data: drainData,
       },
       {
@@ -175,6 +179,7 @@ export function buildDashboardSnapshot(rows, config) {
         accent: 'cyan',
         chart: 'horizontal-bar',
         title: 'Proving value',
+        question: config.fields.provingValue,
         data: valueData,
       },
       {
@@ -182,6 +187,7 @@ export function buildDashboardSnapshot(rows, config) {
         accent: 'coral',
         chart: 'donut-split',
         title: 'Clean room maturity',
+        question: config.fields.cleanRooms,
         data: cleanRoomData,
       },
       {
@@ -189,6 +195,7 @@ export function buildDashboardSnapshot(rows, config) {
         accent: 'gold',
         chart: 'vertical-bar',
         title: 'Daily AI usage',
+        question: config.fields.aiUsage,
         data: aiUsageData,
       },
       {
@@ -196,6 +203,7 @@ export function buildDashboardSnapshot(rows, config) {
         accent: 'mint',
         chart: 'vertical-bar',
         title: 'Network footprint',
+        question: config.fields.networks,
         data: networkData,
       },
     ],
