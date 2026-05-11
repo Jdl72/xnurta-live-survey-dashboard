@@ -103,7 +103,8 @@ textarea {
 .brand-lockup-event {
   display: grid;
   gap: 8px;
-  align-items: start;
+  justify-items: center;
+  text-align: center;
 }
 
 .event-logo {
@@ -117,6 +118,7 @@ textarea {
   display: inline-flex;
   align-items: center;
   gap: 10px;
+  justify-content: center;
 }
 
 .presenter-label {
