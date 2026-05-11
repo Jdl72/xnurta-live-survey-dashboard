@@ -21,8 +21,11 @@ import {
 import xnurtaLogoWhite from './assets/xnurta-logo-white.png';
 import xnurtaIconColor from './assets/xnurta-icon-color.png';
 
+const SECTION_ROTATE_MS = 12000;
+
 function App() {
   const [rows, setRows] = useState(mockRows);
+  const [activeSectionIndex, setActiveSectionIndex] = useState(0);
   const [status, setStatus] = useState({
     sourceLabel: 'Demo mode',
     lastUpdated: new Date(),
@@ -73,15 +76,49 @@ function App() {
     () => buildDashboardSnapshot(rows, defaultSurveyConfig),
     [rows],
   );
-  const readinessPanels = snapshot.panels.filter((panel) =>
-    ['confidence', 'trust', 'organization'].includes(panel.key),
+  const sections = useMemo(
+    () => [
+      {
+        key: 'readiness',
+        eyebrow: 'AI Readiness',
+        title: 'How prepared the room feels',
+        layoutClass: 'section-grid-readiness',
+        panels: snapshot.panels.filter((panel) =>
+          ['confidence', 'trust', 'organization'].includes(panel.key),
+        ),
+      },
+      {
+        key: 'friction',
+        eyebrow: 'Operational Friction',
+        title: 'Where retail media teams lose the most energy',
+        layoutClass: 'section-grid-friction',
+        panels: snapshot.panels.filter((panel) =>
+          ['operationalDrain', 'provingValue'].includes(panel.key),
+        ),
+      },
+      {
+        key: 'maturity',
+        eyebrow: 'Program Maturity',
+        title: 'Signals of capability, scale, and adoption',
+        layoutClass: 'section-grid-maturity',
+        panels: snapshot.panels.filter((panel) =>
+          ['cleanRooms', 'aiUsage', 'networks'].includes(panel.key),
+        ),
+      },
+    ],
+    [snapshot.panels],
   );
-  const frictionPanels = snapshot.panels.filter((panel) =>
-    ['operationalDrain', 'provingValue'].includes(panel.key),
-  );
-  const maturityPanels = snapshot.panels.filter((panel) =>
-    ['cleanRooms', 'aiUsage', 'networks'].includes(panel.key),
-  );
+  const activeSection = sections[activeSectionIndex];
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setActiveSectionIndex((current) => (current + 1) % sections.length);
+    }, SECTION_ROTATE_MS);
+
+    return () => {
+      window.clearInterval(timer);
+    };
+  }, [sections.length]);
 
   return (
     <DashboardErrorBoundary>
@@ -126,79 +163,31 @@ function App() {
             <strong>{status.sourceLabel}</strong>
           </div>
           <div>
-            <span className="status-label">Mode</span>
-            <strong>{defaultSurveyConfig.mode}</strong>
+            <span className="status-label">Now showing</span>
+            <strong>{activeSection.eyebrow}</strong>
           </div>
           {status.error ? <div className="status-error">{status.error}</div> : null}
         </section>
 
-        <SectionBlock
-          eyebrow="AI Readiness"
-          title="How prepared the room feels"
-          layoutClass="section-grid-readiness"
-        >
-          <Panel
-            key="confidence"
-            title={readinessPanels[0].title}
-            accent={readinessPanels[0].accent}
-            variant="featured"
-          >
-            <DashboardErrorBoundary compact>
-              <ChartRenderer panel={readinessPanels[0]} />
-            </DashboardErrorBoundary>
-          </Panel>
-          <div className="stack-column">
-            {readinessPanels.slice(1).map((panel) => (
-              <Panel
-                key={panel.key}
-                title={panel.title}
-                accent={panel.accent}
-                variant="compact"
-              >
-                <DashboardErrorBoundary compact>
-                  <ChartRenderer panel={panel} />
-                </DashboardErrorBoundary>
-              </Panel>
-            ))}
-          </div>
-        </SectionBlock>
+        <section className="section-switcher" aria-label="Dashboard sections">
+          {sections.map((section, index) => (
+            <button
+              key={section.key}
+              type="button"
+              className={`section-pill ${index === activeSectionIndex ? 'section-pill-active' : ''}`}
+              onClick={() => setActiveSectionIndex(index)}
+            >
+              {section.eyebrow}
+            </button>
+          ))}
+        </section>
 
         <SectionBlock
-          eyebrow="Operational Friction"
-          title="Where retail media teams lose the most energy"
-          layoutClass="section-grid-friction"
+          eyebrow={activeSection.eyebrow}
+          title={activeSection.title}
+          layoutClass={activeSection.layoutClass}
         >
-          {frictionPanels.map((panel) => (
-            <Panel
-              key={panel.key}
-              title={panel.title}
-              accent={panel.accent}
-              variant="wide"
-            >
-              <DashboardErrorBoundary compact>
-                <ChartRenderer panel={panel} />
-              </DashboardErrorBoundary>
-            </Panel>
-          ))}
-        </SectionBlock>
-
-        <SectionBlock
-          eyebrow="Program Maturity"
-          title="Signals of capability, scale, and adoption"
-          layoutClass="section-grid-maturity"
-        >
-          {maturityPanels.map((panel) => (
-            <Panel
-              key={panel.key}
-              title={panel.title}
-              accent={panel.accent}
-              variant="compact"
-            >
-              <DashboardErrorBoundary compact>
-                <ChartRenderer panel={panel} />
-              </DashboardErrorBoundary>
-            </Panel>
-          ))}
+          <SectionPanels section={activeSection} />
         </SectionBlock>
       </main>
     </DashboardErrorBoundary>
@@ -224,6 +213,57 @@ function SectionBlock({ eyebrow, title, layoutClass, children }) {
       <div className={`section-grid ${layoutClass}`}>{children}</div>
     </section>
   );
+}
+
+function SectionPanels({ section }) {
+  if (section.key === 'readiness') {
+    return (
+      <>
+        <Panel
+          key={section.panels[0].key}
+          title={section.panels[0].title}
+          accent={section.panels[0].accent}
+          variant="featured"
+        >
+          <DashboardErrorBoundary compact>
+            <ChartRenderer panel={section.panels[0]} />
+          </DashboardErrorBoundary>
+        </Panel>
+        <div className="stack-column">
+          {section.panels.slice(1).map((panel) => (
+            <Panel key={panel.key} title={panel.title} accent={panel.accent} variant="compact">
+              <DashboardErrorBoundary compact>
+                <ChartRenderer panel={panel} />
+              </DashboardErrorBoundary>
+            </Panel>
+          ))}
+        </div>
+      </>
+    );
+  }
+
+  if (section.key === 'friction') {
+    return section.panels.map((panel) => (
+      <Panel key={panel.key} title={panel.title} accent={panel.accent} variant="wide">
+        <DashboardErrorBoundary compact>
+          <ChartRenderer panel={panel} />
+        </DashboardErrorBoundary>
+      </Panel>
+    ));
+  }
+
+  return section.panels.map((panel, index) => (
+    <Panel
+      key={panel.key}
+      title={panel.title}
+      accent={panel.accent}
+      variant={index === 0 ? 'maturity-featured' : 'maturity-compact'}
+    >
+      <DashboardErrorBoundary compact>
+        <ChartRenderer panel={panel} />
+      </DashboardErrorBoundary>
+    </Panel>
+  ));
 }
 
 function Panel({ title, accent, children, variant = 'default' }) {
