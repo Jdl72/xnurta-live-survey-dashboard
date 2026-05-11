@@ -51,7 +51,7 @@ textarea {
   min-height: 100vh;
   max-width: 1680px;
   margin: 0 auto;
-  padding: 24px 292px 180px 28px;
+  padding: 24px 304px 180px 36px;
   overflow: hidden;
 }
 
@@ -80,9 +80,12 @@ textarea {
 .brand-bar,
 .hero,
 .status-bar,
-.section-block {
+.section-block,
+.section-switcher,
+.slide-loop {
   position: relative;
   z-index: 1;
+  padding-inline: clamp(10px, 1.4vw, 24px);
 }
 
 .brand-bar {
