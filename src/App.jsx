@@ -215,10 +215,10 @@ function App() {
 
         <section className="hero">
           <div className="hero-copy">
-            <p className="eyebrow">Retail Media + Agentic AI</p>
+            <p className="eyebrow">Signal to Scale 2026</p>
             <h1>Capturing Signal</h1>
             <p className="hero-text">
-              Real-time audience sentiment across AI readiness, retail media friction, and program maturity.
+              Live audience survey for Xnurta&apos;s executive summit on retail media, agentic AI, and measurement.
             </p>
           </div>
 
@@ -237,15 +237,15 @@ function App() {
         <section className="status-bar">
           <div>
             <span className="status-label">Event</span>
-            <strong>Live audience survey</strong>
+            <strong>Signal to Scale 2026</strong>
           </div>
           <div>
             <span className="status-label">Theme</span>
-            <strong>Retail Media + Agentic AI</strong>
+            <strong>Retail media + agentic AI</strong>
           </div>
           <div>
             <span className="status-label">Prompt</span>
-            <strong>Scan to answer live</strong>
+            <strong>Signal to scale, live</strong>
           </div>
           {status.error ? <div className="status-error">{status.error}</div> : null}
         </section>
@@ -369,7 +369,7 @@ function SurveyCta() {
   return (
     <aside className="survey-cta">
       <div className="survey-cta-copy">
-        <span className="survey-cta-label">Join the live survey</span>
+        <span className="survey-cta-label">Signal to Scale live survey</span>
         <strong>Scan to answer</strong>
       </div>
       <div className="survey-qr">

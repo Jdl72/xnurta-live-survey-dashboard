@@ -53,8 +53,14 @@ describe('App', () => {
 
     render(<App />);
 
+    await waitFor(() => expect(fetchSurveyRows).toHaveBeenCalledTimes(1));
     expect(screen.getByRole('heading', { name: 'Capturing Signal' })).toBeInTheDocument();
-    expect(screen.getByText('Live audience survey')).toBeInTheDocument();
+    expect(screen.getAllByText('Signal to Scale 2026').length).toBeGreaterThan(0);
+    expect(
+      screen.getByText(
+        "Live audience survey for Xnurta's executive summit on retail media, agentic AI, and measurement.",
+      ),
+    ).toBeInTheDocument();
     expect(screen.getAllByRole('heading', { level: 2 }).length).toBeGreaterThanOrEqual(1);
     expect(screen.getByRole('button', { name: 'Dashboard' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Slide loop' })).toHaveClass('view-toggle-button-active');
@@ -76,7 +82,7 @@ describe('App', () => {
     render(<App />);
 
     await waitFor(() => expect(fetchSurveyRows).toHaveBeenCalledTimes(1));
-    expect(screen.getByText('Live audience survey')).toBeInTheDocument();
+    expect(screen.getAllByText('Signal to Scale 2026').length).toBeGreaterThan(0);
     expect(getMetricCard('Responses')).toHaveTextContent('2');
 
     await act(async () => {
@@ -96,7 +102,9 @@ describe('App', () => {
 
     await waitFor(() => expect(fetchSurveyRows).toHaveBeenCalledTimes(1));
     await waitFor(() =>
-      expect(document.body.textContent).toContain('Google Sheets fetch failed with status 500.'),
+      expect(document.querySelector('.status-error')).toHaveTextContent(
+        'Google Sheets fetch failed with status 500.',
+      ),
     );
     expect(screen.getByRole('heading', { name: 'Capturing Signal' })).toBeInTheDocument();
   });

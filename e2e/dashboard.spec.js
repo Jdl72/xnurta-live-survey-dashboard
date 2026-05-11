@@ -19,7 +19,8 @@ test('renders the dashboard with sheet-backed data and no page crashes', async (
 
   await expect(page.getByRole('heading', { name: 'Capturing Signal' })).toBeVisible();
   await expect(page.locator('.panel')).toHaveCount(1);
-  await expect(page.locator('.status-bar')).toContainText('Live audience survey');
+  await expect(page.locator('.status-bar')).toContainText('Signal to Scale 2026');
+  await expect(page.locator('.status-bar')).toContainText('Retail media + agentic AI');
   await expect(page.locator('.survey-cta')).toContainText('Scan to answer');
   expect(pageErrors).toEqual([]);
 });
